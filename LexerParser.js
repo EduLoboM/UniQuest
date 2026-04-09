@@ -16,6 +16,9 @@ class SupremeSkillEngine {
       ["domínio", 90],
       ["experiência sólida", 85],
       ["sólida", 85],
+      ["sólidas", 85],
+      ["sólido", 85],
+      ["sólidos", 85],
       ["experiência", 65],
       ["conhecimento", 40],
       ["familiaridade", 50],
@@ -29,23 +32,25 @@ class SupremeSkillEngine {
     this.commonAcronyms = new Set([
       "SQL", "AWS", "AZURE", "GCP", "AI", "ML", "NLP", "ERP", "CRM",
       "API", "UI", "UX", "HTML", "CSS", "JS", "TS", "REACT", "NODE",
-      "DOCKER", "K8S", "CI", "CD", "ETL", "BI", "POWERBI", "LLM", "LLMS",
+      "DOCKER", "K8S", "CI", "CD", "ETL", "BI", "POWERBI", "LLM", "LLMS", "C#", "C++",
     ]);
 
     // Precompila o padrão de remoção (muito mais eficiente)
+    // Note: JS \b doesn't work with accented chars — use Unicode lookarounds
     const allIntensifiers = this.intensifiers
       .map(([k]) => k)
       .sort((a, b) => b.length - a.length);
 
     const removeTerms = [
       ...allIntensifiers,
-      "em", "com", "de", "na", "no", "para", "a", "o", "as", "os", "e",
+      "em", "com", "de", "na", "no", "para", "a", "o", "as", "os", "um", "uma"
     ];
 
     const escaped = removeTerms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    // Unicode-aware word boundary: (?<!\p{L}) ... (?!\p{L})
     this._removePattern = new RegExp(
-      `\\b(${escaped.join("|")})\\b`,
-      "gi"
+      `(?<!\\p{L})(${escaped.join("|")})(?!\\p{L})`,
+      "giu"
     );
 
     this.defaultCategories = ["Psicologia", "Artes", "TI", "Outros"];
@@ -97,10 +102,12 @@ class SupremeSkillEngine {
 
     // Title-case for words longer than 3 chars, otherwise uppercase
     if (clean.length > 3) {
-      return clean.replace(
-        /\b\w+/g,
-        (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-      );
+      return clean.split(/\s+/).map((w) => {
+        // Keep acronyms in the middle of sentences capitalized if they are known
+        const wUpper = w.toUpperCase();
+        if (this.commonAcronyms.has(wUpper.replace(/[(),]/g, ""))) return wUpper;
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+      }).join(" ");
     }
     return clean.toUpperCase();
   }
@@ -116,7 +123,8 @@ class SupremeSkillEngine {
     // 1. Detecção de intensidade (mantém prioridade do array)
     let detectedScore = 40; // default mais realista
     for (const [word, val] of this.intensifiers) {
-      const wordPattern = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+      const esc = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const wordPattern = new RegExp(`(?<!\\p{L})${esc}(?!\\p{L})`, "iu");
       if (wordPattern.test(lowerLine)) {
         detectedScore = val;
         break;
@@ -150,10 +158,10 @@ class SupremeSkillEngine {
     const vagaMapeada = {};
     let novidades = false;
 
-    // Limpa bullets e linhas vazias
+    // Considera apenas as linhas que são itens de lista para não pegar lixo
     const lines = texto
       .split("\n")
-      .filter((l) => l.trim())
+      .filter((l) => /^\s*(?:[-•*]|\d+[.)])\s+/.test(l))
       .map((l) => l.replace(/^\s*(?:[-•*]|\d+[.)])\s*/, "").trim());
 
     for (const line of lines) {
@@ -170,6 +178,10 @@ class SupremeSkillEngine {
 
         const skillName = this._normalizeSkillName(part);
         const skillKey = skillName.toLowerCase();
+
+        // Evita sentenças longas e não tira preposição do meio se quebrou errado
+        const wordCount = skillName.trim().split(/\s+/).length;
+        if (wordCount > 4) continue;
 
         // Adiciona ao registry global se for nova
         if (!existingSkillsLower.has(skillKey)) {
@@ -193,3 +205,37 @@ class SupremeSkillEngine {
 }
 
 export default SupremeSkillEngine;
+
+// ── CLI runner ──────────────────────────────────────────────────────────
+
+function main() {
+  const examplePath = path.resolve(
+    path.dirname(new URL(import.meta.url).pathname),
+    "example.txt"
+  );
+
+  if (!fs.existsSync(examplePath)) {
+    console.error(`❌ Arquivo não encontrado: ${examplePath}`);
+    process.exit(1);
+  }
+
+  const texto = fs.readFileSync(examplePath, "utf-8");
+  const engine = new SupremeSkillEngine();
+  const result = engine.parseVaga(texto, "TI");
+
+  console.log("\n── Resultado da Vaga ──────────────────────────────────");
+  console.log(JSON.stringify(result, null, 2));
+
+  console.log("\n── Registro Global (TI) ──────────────────────────────");
+  console.log(JSON.stringify(engine.skillRegistry["TI"], null, 2));
+}
+
+// Run only when executed directly (not when imported as a module)
+const isMain =
+  process.argv[1] &&
+  fs.realpathSync(process.argv[1]) ===
+    fs.realpathSync(new URL(import.meta.url).pathname);
+
+if (isMain) {
+  main();
+}

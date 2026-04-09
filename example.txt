@@ -1,0 +1,41 @@
+🚀 Estamos contratando | Game Developer Júnior/Pleno
+
+A Studio Aurora Games está em busca de uma pessoa apaixonada por jogos, programação e experiências interativas para integrar nosso time de desenvolvimento.
+
+Se você curte trabalhar em projetos criativos, colaborar com arte, design e narrativa, e gosta de transformar ideias em gameplay de verdade, essa vaga pode ser para você.
+
+📍 Modelo: Remoto / híbrido
+📌 Local: Brasil
+🕒 Tipo de contratação: CLT ou PJ, a combinar
+
+O que você vai fazer:
+	•	Desenvolver e manter sistemas de gameplay
+	•	Implementar mecânicas, UI e funcionalidades em engine
+	•	Trabalhar junto com design, arte e animação para entregar features
+	•	Corrigir bugs e otimizar performance
+	•	Participar de code reviews e decisões técnicas
+	•	Apoiar na integração de assets e ferramentas internas
+
+O que buscamos:
+	•	Experiência com Unity (C#) ou Unreal Engine (C++)
+	•	Noções sólidas de lógica de programação e orientação a objetos
+	•	Familiaridade com Git
+	•	Boa comunicação e trabalho em equipe
+	•	Vontade de aprender e crescer em um ambiente dinâmico
+
+Diferenciais:
+	•	Experiência com jogos mobile, PC ou console
+	•	Conhecimento em otimização de performance
+	•	Interesse por pipelines de produção e ferramentas internas
+	•	Portfólio com projetos próprios, jams ou games publicados
+
+Benefícios:
+	•	Ambiente colaborativo e criativo
+	•	Participação em projetos autorais
+	•	Flexibilidade de horário
+	•	Oportunidade de crescimento técnico
+	•	Ajuda de custo / pacote compatível com a senioridade
+
+📩 Interessou? Envie seu currículo e portfólio para recrutamento@studioaurora.games com o assunto: Vaga Game Developer
+
+#Vaga #GameDev #Unity #UnrealEngine #CSharp #CPlusPlus #Programação #GameDeveloper #LinkedInJobs #Oportunidade #DesenvolvimentoDeJogos
