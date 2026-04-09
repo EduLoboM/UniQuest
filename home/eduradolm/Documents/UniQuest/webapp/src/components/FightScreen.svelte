@@ -1,0 +1,332 @@
+<script>
+  import { navigate } from '../stores.js';
+
+  // Dados mockados – você pode depois conectar com props ou stores
+  let jobTitle = "Desenvolvedor Front-end";
+  let company = "TechCorp";
+  let jobClass = "Pleno";
+  let briefDescription = "Atuar com React, TypeScript e design systems...";
+
+  let skills = [
+    { name: "React", icon: "pc.png", value: 85, active: true },
+    { name: "TypeScript", icon: "document.png", value: 70, active: true },
+    { name: "Testes", icon: "bug.png", value: 60, active: false },
+    { name: "Acessibilidade", icon: "distintivo.png", value: 75, active: true },
+    { name: "Otimização", icon: "pc.png", value: 80, active: true },
+    { name: "Scrum", icon: "distintivo.png", value: 90, active: true }
+  ];
+
+  // Alternar descrição completa (opcional)
+  let showFullDescription = false;
+</script>
+
+<div class="fight-container">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="title">{jobTitle}</div>
+    <div class="company">{company}</div>
+  </div>
+
+  <!-- SUB HEADER -->
+  <div class="sub-header">
+    <div class="tag">{jobClass}</div>
+    <div class="description" on:click={() => showFullDescription = !showFullDescription}>
+      {#if showFullDescription}
+        {briefDescription}
+      {:else}
+        {briefDescription.length > 40 ? briefDescription.slice(0, 40) + '...' : briefDescription}
+      {/if}
+      <span class="plus">{showFullDescription ? '−' : '+'}</span>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="skills-box">
+    {#each skills as skill}
+      <div class="skill">
+        <div class="skill-header">
+          <img src="/{skill.icon}" alt="" class="icon" />
+          <span class="name">{skill.name}</span>
+          {#if skill.active}
+            <span class="status success">✔</span>
+          {:else}
+            <span class="status fail">✖</span>
+          {/if}
+        </div>
+        <div class="bar">
+          <div class="fill" style="width: {skill.value}%"></div>
+        </div>
+      </div>
+    {/each}
+  </div>
+
+  <!-- BATTLE -->
+  <div class="battle">
+    <img src="/battle.gif" alt="battle scene" />
+  </div>
+
+  <!-- Espaçador para menu fixo -->
+  <div class="spacer"></div>
+</div>
+
+<!-- Menu fixo igual ao PlayerCard -->
+<div class="fixed-menu">
+  <div class="footer-pill">
+    <div class="icon-btn" on:click={() => navigate('/')}>
+      <img src="/usericon.png" alt="Perfil" />
+    </div>
+    <div class="icon-btn" on:click={() => navigate('/fight')}>
+      <img src="/battleicon.png" alt="Batalha" />
+    </div>
+    <div class="icon-btn">
+      <img src="/questlog.png" alt="Missões" />
+    </div>
+  </div>
+</div>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .fight-container {
+    width: 100%;
+    min-height: 100vh;
+    background: #d4eed7;
+    padding: 48px;
+    padding-bottom: 120px; /* espaço extra para menu fixo */
+    font-family: 'JetBrains Mono', monospace;
+    color: #0b2f1f;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .title,
+  .company {
+    flex: 1;
+    background: #0E540C;
+    color: #19E697;
+    text-align: center;
+    padding: 20px 16px;
+    border-radius: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Space Grotesk', sans-serif;
+    border: 3px solid #1ABC67;
+    box-shadow: 0 4px 0 #0b2f1f;
+  }
+
+  /* SUB HEADER */
+  .sub-header {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    background: #eef9ef;
+    padding: 14px 24px;
+    border-radius: 20px;
+    border: 2px solid #158425;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #0E540C;
+    display: flex;
+    align-items: center;
+  }
+
+  .description {
+    flex: 1;
+    background: #eef9ef;
+    padding: 14px 24px;
+    border-radius: 20px;
+    border: 2px solid #158425;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .description:hover {
+    background: #c8e6d9;
+  }
+
+  .plus {
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: #0E540C;
+    margin-left: 12px;
+  }
+
+  /* SKILLS */
+  .skills-box {
+    background: #eef9ef;
+    padding: 24px;
+    border-radius: 24px;
+    border: 2px solid #158425;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1ABC67 #c8e6d9;
+    margin-bottom: 24px;
+  }
+
+  .skills-box::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .skills-box::-webkit-scrollbar-track {
+    background: #c8e6d9;
+    border-radius: 10px;
+  }
+
+  .skills-box::-webkit-scrollbar-thumb {
+    background: #1ABC67;
+    border-radius: 10px;
+  }
+
+  .skill {
+    font-size: 1rem;
+  }
+
+  .skill-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .name {
+    font-weight: bold;
+    color: #0b2f1f;
+  }
+
+  .status {
+    margin-left: auto;
+    font-size: 1.2rem;
+  }
+
+  .success {
+    color: #158425;
+  }
+
+  .fail {
+    color: #b00020;
+  }
+
+  .bar {
+    height: 10px;
+    background: #c8e6d9;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .fill {
+    height: 100%;
+    background: #1ABC67;
+    border-radius: 10px;
+    box-shadow: 0 0 6px #19E697;
+  }
+
+  /* BATTLE */
+  .battle {
+    border-radius: 24px;
+    overflow: hidden;
+    border: 3px solid #158425;
+    background: #0E540C;
+  }
+
+  .battle img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    max-height: 300px;
+  }
+
+  /* Espaçador */
+  .spacer {
+    height: 20px;
+  }
+
+  /* Menu fixo (idêntico ao PlayerCard) */
+  .fixed-menu {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));
+  }
+
+  .footer-pill {
+    background: #0E540C;
+    border-radius: 60px;
+    display: flex;
+    gap: 24px;
+    padding: 18px 40px;
+    border: 3px solid #1ABC67;
+    backdrop-filter: blur(4px);
+  }
+
+  .icon-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #14250B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #19E697;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+    padding: 8px;
+  }
+
+  .icon-btn:hover {
+    background: #1ABC67;
+    transform: scale(1.1);
+  }
+
+  .icon-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  /* Responsividade */
+  @media (max-width: 900px) {
+    .fight-container {
+      padding: 24px;
+      padding-bottom: 100px;
+    }
+    .header {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .skills-box {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .title,
+    .company {
+      font-size: 1.4rem;
+      padding: 14px;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
+  import { navigate } from "../stores.js"; // <-- ADICIONE ESTA LINHA
 
   let playerName = "Nome do Jogador";
   let playerClass = "";
@@ -15,23 +16,25 @@
     "Gerente de Projetos",
     "QA / Tester",
     "Analista de Dados",
-    "Engenheiro de Software"
+    "Engenheiro de Software",
   ];
 
   // Mapeamento de cargos para ícones (com as três variantes)
   const classIconMap = {
     "Desenvolvedor Front-end": "archerclasse.png",
     "Desenvolvedor Back-end": "magoclasse.png",
-    "DevOps": "bardoclasse.png",
+    DevOps: "bardoclasse.png",
     "UI/UX Designer": "archerclasse.png",
     "Gerente de Projetos": "bardoclasse.png",
     "QA / Tester": "magoclasse.png",
     "Analista de Dados": "archerclasse.png",
-    "Engenheiro de Software": "magoclasse.png"
+    "Engenheiro de Software": "magoclasse.png",
   };
 
   // Ícone padrão caso não haja mapeamento
-  $: classIcon = playerClass ? classIconMap[playerClass] || "espadaclasse.png" : "espadaclasse.png";
+  $: classIcon = playerClass
+    ? classIconMap[playerClass] || "espadaclasse.png"
+    : "espadaclasse.png";
 
   // Lista de habilidades
   let skillsList = [
@@ -42,7 +45,7 @@
     { name: "Docker", selected: true, icon: "bug.png" },
     { name: "Figma", selected: false, icon: "pc.png" },
     { name: "Scrum", selected: false, icon: "distintivo.png" },
-    { name: "TypeScript", selected: false, icon: "document.png" }
+    { name: "TypeScript", selected: false, icon: "document.png" },
   ];
 
   function toggleSkill(index) {
@@ -51,9 +54,10 @@
   }
 
   onMount(() => {
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap';
-    link.rel = 'stylesheet';
+    const link = document.createElement("link");
+    link.href =
+      "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap";
+    link.rel = "stylesheet";
     document.head.appendChild(link);
   });
 </script>
@@ -61,11 +65,7 @@
 <div class="container">
   <div class="left">
     <!-- Foto de perfil alterada para perfil.png -->
-    <img 
-      src="/perfil.png" 
-      alt="Personagem" 
-      class="character-img"
-    />
+    <img src="/perfil.png" alt="Personagem" class="character-img" />
     <!-- Ícone da classe que muda dinamicamente -->
     <div class="overlay-icon">
       <img src="/{classIcon}" alt="Classe" />
@@ -74,10 +74,10 @@
 
   <div class="right">
     <div class="header">
-      <input 
-        type="text" 
-        class="player-name-input" 
-        bind:value={playerName} 
+      <input
+        type="text"
+        class="player-name-input"
+        bind:value={playerName}
         placeholder="Seu nome"
       />
 
@@ -90,23 +90,24 @@
       </div>
     </div>
 
-    <select bind:value={playerClass} class={playerClass === "" ? "placeholder-active" : ""}>
+    <select
+      bind:value={playerClass}
+      class={playerClass === "" ? "placeholder-active" : ""}
+    >
       <option value="" disabled selected>[Cargo de TI]</option>
       {#each tiRoles as role}
         <option value={role}>{role}</option>
       {/each}
     </select>
 
-    <textarea 
-      placeholder="[Descrição do Jogador]" 
-      bind:value={description}
+    <textarea placeholder="[Descrição do Jogador]" bind:value={description}
     ></textarea>
 
     <!-- Habilidades com scroll -->
     <div class="skills-scrollable">
       {#each skillsList as skill, i}
-        <div 
-          class="skill-item" 
+        <div
+          class="skill-item"
           class:selected={skill.selected}
           on:click={() => toggleSkill(i)}
         >
@@ -123,9 +124,18 @@
 <!-- Menu fixo com imagens -->
 <div class="fixed-menu">
   <div class="footer-pill">
-    <div class="icon-btn"><img src="/usericon.png" alt="Perfil" /></div>
-    <div class="icon-btn"><img src="/battleicon.png" alt="Batalha" /></div>
-    <div class="icon-btn"><img src="/questlog.png" alt="Missões" /></div>
+    <!-- Ícone esquerdo: vai para PlayerCard (home) -->
+    <div class="icon-btn" on:click={() => navigate("/")}>
+      <img src="/usericon.png" alt="Perfil" />
+    </div>
+    <!-- Ícone do meio: vai para FightScreen -->
+    <div class="icon-btn" on:click={() => navigate("/fight")}>
+      <img src="/battleicon.png" alt="Batalha" />
+    </div>
+    <!-- Ícone direito: sem ação por enquanto -->
+    <div class="icon-btn">
+      <img src="/questlog.png" alt="Missões" />
+    </div>
   </div>
 </div>
 
@@ -141,7 +151,7 @@
     padding: 48px;
     display: flex;
     gap: 40px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 1.2rem;
     margin: 0;
     color: #0b2f1f;
@@ -169,7 +179,7 @@
     left: -30px;
     width: 120px;
     height: 120px;
-    background: #0E540C;
+    background: #0e540c;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -207,7 +217,7 @@
     border-radius: 12px;
     font-weight: 700;
     font-size: 1.8rem;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Space Grotesk", sans-serif;
     border: 3px solid #158425;
     outline: none;
     width: auto;
@@ -216,7 +226,7 @@
   }
 
   .player-name-input:focus {
-    border-color: #1ABC67;
+    border-color: #1abc67;
     box-shadow: 0 0 0 3px rgba(21, 132, 37, 0.2);
   }
 
@@ -242,9 +252,9 @@
 
   .bar-fill {
     height: 100%;
-    background: #1ABC67;
+    background: #1abc67;
     border-radius: 15px;
-    box-shadow: 0 0 8px #19E697;
+    box-shadow: 0 0 8px #19e697;
   }
 
   .medal-icon {
@@ -256,8 +266,8 @@
   .xp {
     font-weight: bold;
     font-size: 1.8rem;
-    color: #0E540C;
-    font-family: 'Space Mono', monospace;
+    color: #0e540c;
+    font-family: "Space Mono", monospace;
   }
 
   /* Select e Textarea */
@@ -268,15 +278,15 @@
     border-radius: 20px;
     border: 2px solid #158425;
     background: #eef9ef;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     color: #0b2f1f;
     font-size: 1.2rem;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
   }
 
   select {
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23158425%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23158425%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: right 20px top 50%;
     background-size: 16px auto;
@@ -307,7 +317,7 @@
     padding: 18px;
     border: 2px solid #158425;
     scrollbar-width: thin;
-    scrollbar-color: #1ABC67 #c8e6d9;
+    scrollbar-color: #1abc67 #c8e6d9;
   }
 
   .skills-scrollable::-webkit-scrollbar {
@@ -320,7 +330,7 @@
   }
 
   .skills-scrollable::-webkit-scrollbar-thumb {
-    background: #1ABC67;
+    background: #1abc67;
     border-radius: 10px;
   }
 
@@ -334,7 +344,7 @@
     border: 2px solid transparent;
     cursor: pointer;
     transition: all 0.15s;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 1.1rem;
     color: #0b2f1f;
   }
@@ -345,8 +355,8 @@
   }
 
   .skill-item.selected {
-    background: #1ABC67;
-    border-color: #0E540C;
+    background: #1abc67;
+    border-color: #0e540c;
     color: #ffffff;
     font-weight: bold;
     box-shadow: 0 0 8px #158425;
@@ -370,16 +380,16 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
   }
 
   .footer-pill {
-    background: #0E540C;
+    background: #0e540c;
     border-radius: 60px;
     display: flex;
     gap: 24px;
     padding: 18px 40px;
-    border: 3px solid #1ABC67;
+    border: 3px solid #1abc67;
     backdrop-filter: blur(4px);
   }
 
@@ -387,18 +397,20 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #14250B;
+    background: #14250b;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #19E697;
+    border: 2px solid #19e697;
     cursor: pointer;
-    transition: transform 0.1s, background 0.2s;
+    transition:
+      transform 0.1s,
+      background 0.2s;
     padding: 8px;
   }
 
   .icon-btn:hover {
-    background: #1ABC67;
+    background: #1abc67;
     transform: scale(1.1);
   }
 
@@ -415,7 +427,8 @@
       flex-direction: column;
       padding: 24px;
     }
-    .left, .right {
+    .left,
+    .right {
       width: 100%;
     }
     .character-img {

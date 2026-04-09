@@ -1,22 +1,27 @@
 <script>
   import PlayerCard from './components/PlayerCard.svelte';
+  import FightScreen from './components/FightScreen.svelte';
+  import { currentRoute } from './stores.js';
 </script>
 
 <main class="page">
-  <PlayerCard />
+  {#if $currentRoute === '/'}
+    <PlayerCard />
+  {:else if $currentRoute === '/fight'}
+    <FightScreen />
+  {/if}
 </main>
 
 <style>
   .page {
     min-height: 100vh;
-    background: #e9f6ed;
-    /* removido display flex e centralização */
-    padding: 0; /* opcional: remova completamente a margem interna */
+    background: #d4eed7;
+    padding: 0;
   }
 
   :global(body) {
     margin: 0;
-    background: #e9f6ed;
-    font-family: Inter, system-ui, sans-serif;
+    background: #d4eed7;
+    font-family: 'JetBrains Mono', monospace;
   }
 </style>
