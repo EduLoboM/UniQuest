@@ -149,8 +149,8 @@
     <div class="icon-btn" on:click={() => navigate("/fight")}>
       <img src="/battleicon.png" alt="Batalha" />
     </div>
-    <!-- Ícone direito: sem ação por enquanto -->
-    <div class="icon-btn">
+    <!-- Ícone direito: vai para QuestLog -->
+    <div role="button" tabindex="0" class="icon-btn" on:click={() => navigate("/quest")} on:keydown={(e) => e.key === 'Enter' && navigate('/quest')}>
       <img src="/questlog.png" alt="Missões" />
     </div>
   </div>

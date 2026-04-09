@@ -1,110 +1,110 @@
 {
   "c++": [
     {
-      "title": "C++ Tutorial for Beginners",
-      "url": "https://www.youtube.com/watch?v=vLnPwxZdW4Y"
+      "title": "Aprender C++ (Busca Atualizada)",
+      "url": "https://www.youtube.com/results?search_query=curso+completo+c%2B%2B"
     }
   ],
   "c#": [
     {
       "title": "C# Completo e Orientação a Objetos",
-      "url": "https://www.youtube.com/watch?v=GHqespt__ck"
+      "url": "https://www.youtube.com/results?search_query=curso+c%23+iniciante"
     }
   ],
   "matemática 3d": [
     {
       "title": "3D Math for Game Development",
-      "url": "https://www.youtube.com/watch?v=A_W0zO0XNno"
+      "url": "https://www.youtube.com/results?search_query=3d+math+for+game+development"
     }
   ],
   "oop": [
     {
       "title": "Programação Orientada a Objetos",
-      "url": "https://www.youtube.com/watch?v=QY0Kdg8AIQ"
+      "url": "https://www.youtube.com/results?search_query=curso+de+programacao+orientada+a+objetos"
     }
   ],
   "unity": [
     {
       "title": "Unity Beginner Tutorial",
-      "url": "https://www.youtube.com/watch?v=gB1F9G0J8Ek"
+      "url": "https://www.youtube.com/results?search_query=curso+unity+iniciante"
     }
   ],
   "unreal engine": [
     {
       "title": "Unreal Engine 5 Beginner Tutorial",
-      "url": "https://www.youtube.com/watch?v=k-zMkJMCEAQ"
+      "url": "https://www.youtube.com/results?search_query=curso+unreal+engine+5+iniciante"
     }
   ],
   "git": [
     {
       "title": "Git e Github para Iniciantes",
-      "url": "https://www.youtube.com/watch?v=2kLTiIjc"
+      "url": "https://www.youtube.com/results?search_query=curso+git+e+github+completo"
     }
   ],
   "adobe photoshop": [
     {
       "title": "Curso Completo de Photoshop Grátis",
-      "url": "https://www.youtube.com/watch?v=1b92tZl2B"
+      "url": "https://www.youtube.com/results?search_query=curso+completo+photoshop"
     }
   ],
   "teoria das cores": [
     {
       "title": "Teoria das Cores para Artistas Digitais",
-      "url": "https://www.youtube.com/watch?v=48-H4Xo8h"
+      "url": "https://www.youtube.com/results?search_query=teoria+das+cores+artistas+digitais"
     }
   ],
   "animação 2d": [
     {
       "title": "Fundamentos da Animação 2D",
-      "url": "https://www.youtube.com/watch?v=haXfN2n8I"
+      "url": "https://www.youtube.com/results?search_query=fundamentos+animacao+2d+tutorial"
     }
   ],
   "tcc": [
     {
       "title": "Introdução à Terapia Cognitivo-Comportamental",
-      "url": "https://www.youtube.com/watch?v=R9_mD1F91"
+      "url": "https://www.youtube.com/results?search_query=terapia+cognitivo+comportamental+tcc+aula"
     }
   ],
   "testes psicológicos": [
     {
       "title": "Avaliação Psicológica e Bateria de Testes",
-      "url": "https://www.youtube.com/watch?v=G3z5mKXm3"
+      "url": "https://www.youtube.com/results?search_query=avaliacao+psicologica+e+testes"
     }
   ],
   "terapia sistêmica": [
     {
       "title": "Bases Práticas da Terapia Sistêmica",
-      "url": "https://www.youtube.com/watch?v=Vl8d7K0oZ"
+      "url": "https://www.youtube.com/results?search_query=terapia+sistemica+psicologia+aula"
     }
   ],
   "psiquiatria": [
     {
       "title": "Psiquiatria Básica - Aulas Intensivas",
-      "url": "https://www.youtube.com/watch?v=1L8a2V0dM"
+      "url": "https://www.youtube.com/results?search_query=psiquiatria+basica+resumo"
     }
   ],
   "psicopatologia": [
     {
       "title": "Entendendo a Psicopatologia",
-      "url": "https://www.youtube.com/watch?v=yYf9sT7hH"
+      "url": "https://www.youtube.com/results?search_query=psicopatologia+aula+completa"
     }
   ],
   "psicodiagnóstico": [
     {
       "title": "Introdução Prática ao Psicodiagnóstico",
-      "url": "https://www.youtube.com/watch?v=eRhyQDBiRTo"
+      "url": "https://www.youtube.com/results?search_query=psicodiagnostico+na+pratica"
     }
   ],
   "pintura digital": [
     {
       "title": "Pintura Digital Descomplicada",
-      "url": "https://www.youtube.com/watch?v=xZN_YpG2l60"
+      "url": "https://www.youtube.com/results?search_query=pintura+digital+descomplicada+tutorial"
     }
   ],
   "realismo": [
     {
       "title": "Técnicas de Textura de Estilo Realista",
-      "url": "https://www.youtube.com/watch?v=yPqw6"
+      "url": "https://www.youtube.com/results?search_query=textura+realista+pintura+digital"
     }
   ]
 }

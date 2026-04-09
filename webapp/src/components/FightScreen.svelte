@@ -167,7 +167,7 @@
     <div role="button" tabindex="0" class="icon-btn" on:click={() => navigate('/fight')} on:keydown={(e) => e.key === 'Enter' && navigate('/fight')}>
       <img src="/battleicon.png" alt="Batalha" />
     </div>
-    <div class="icon-btn">
+    <div role="button" tabindex="0" class="icon-btn" on:click={() => navigate('/quest')} on:keydown={(e) => e.key === 'Enter' && navigate('/quest')}>
       <img src="/questlog.png" alt="Missões" />
     </div>
   </div>
