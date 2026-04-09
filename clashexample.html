@@ -1,0 +1,736 @@
+{{define "simulator.html"}}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="/static/css/output.css">
+</head>
+
+<body class="bg-gray-950 text-gray-100">
+    <div class="sim-container">
+
+
+        <header class="sim-header">
+            <a href="/" class="sim-back-btn">←</a>
+            <div class="flex items-center justify-center gap-4">
+                <img src="/static/images/gears.png" alt="Gears" class="w-24 h-24 object-contain drop-shadow-lg">
+                <h1 class="layout-title">Clash & Damage Simulator</h1>
+            </div>
+        </header>
+
+
+        <div class="sim-mode-selector">
+            <button type="button" class="sim-mode-btn active" data-mode="clash">Clash</button>
+            <button type="button" class="sim-mode-btn" data-mode="damage">Damage</button>
+            <button type="button" class="sim-mode-btn" data-mode="both">Clash + Damage</button>
+        </div>
+
+
+        <form class="sim-form" id="simulatorForm">
+            <input type="hidden" name="mode" id="calculatorMode" value="clash">
+
+            <div class="sim-grid">
+
+
+                <div class="sim-card sim-card-attacker">
+                    <div class="sim-card-header">
+                        <h2 class="sim-card-title">Attacker</h2>
+                    </div>
+
+                    <div class="sim-card-body">
+
+
+                        <fieldset class="sim-fieldset">
+                            <legend class="sim-legend">Core Stats</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Power</label>
+                                    <input type="number" name="s1_base_power" value="4" min="0" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Coin Power</label>
+                                    <input type="number" name="s1_coin_power" value="4" min="-20" max="20">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Coins</label>
+                                    <input type="number" name="s1_num_coins" value="2" min="1" max="5">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Heads %</label>
+                                    <input type="number" name="s1_heads_chance" value="50" min="0" max="100">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Paralyze</label>
+                                    <input type="number" name="s1_paralyze" value="0" min="0" max="5">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset">
+                            <legend class="sim-legend">Offense Level</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Level</label>
+                                    <input type="number" name="s1_offense_level" value="40" min="1" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Up</label>
+                                    <input type="number" name="s1_offense_up" value="0" min="0" max="50">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Down</label>
+                                    <input type="number" name="s1_offense_down" value="0" min="0" max="50">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-defense-only>
+                            <legend class="sim-legend">Defense Level</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Level</label>
+                                    <input type="number" name="s1_defense_level" value="40" min="1" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Up</label>
+                                    <input type="number" name="s1_defense_up" value="0" min="0" max="50">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Down</label>
+                                    <input type="number" name="s1_defense_down" value="0" min="0" max="50">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-damage-only>
+                            <legend class="sim-legend">Damage Modifiers</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Damage Up %</label>
+                                    <input type="number" name="s1_damage_up" value="0" min="0" max="500">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Damage Down %</label>
+                                    <input type="number" name="s1_damage_down" value="0" min="0" max="100">
+                                </div>
+                                <div class="sim-field sim-field-checkbox">
+                                    <input type="checkbox" id="s1_is_critical" name="s1_is_critical">
+                                    <label for="s1_is_critical">Critical</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-both-only>
+                            <legend class="sim-legend">Resistances</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Sin Resist</label>
+                                    <select name="s1_sin_resist">
+                                        <option value="2.0">Fatal (×2)</option>
+                                        <option value="1.0" selected>Normal (×1)</option>
+                                        <option value="0.75">Endure (×0.75)</option>
+                                        <option value="0.5">Resist (×0.5)</option>
+                                        <option value="-1">Immune</option>
+                                    </select>
+                                </div>
+                                <div class="sim-field">
+                                    <label>Phys Resist</label>
+                                    <select name="s1_phys_resist">
+                                        <option value="2.0">Fatal (×2)</option>
+                                        <option value="1.0" selected>Normal (×1)</option>
+                                        <option value="0.75">Endure (×0.75)</option>
+                                        <option value="0.5">Resist (×0.5)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-both-only>
+                            <legend class="sim-legend">Status Effects</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Fragile</label>
+                                    <input type="number" name="s1_fragile" value="0" min="0" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Protection</label>
+                                    <input type="number" name="s1_protection" value="0" min="0" max="99">
+                                </div>
+                                <div class="sim-field sim-field-checkbox">
+                                    <input type="checkbox" id="s1_staggered" name="s1_staggered">
+                                    <label for="s1_staggered">Staggered</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+
+
+                <div class="sim-card sim-card-defender">
+                    <div class="sim-card-header">
+                        <h2 class="sim-card-title" id="skill2Title">Defender</h2>
+                    </div>
+
+                    <div class="sim-card-body">
+
+
+                        <fieldset class="sim-fieldset" data-skill2-only>
+                            <legend class="sim-legend">Core Stats</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Power</label>
+                                    <input type="number" name="s2_base_power" value="4" min="0" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Coin Power</label>
+                                    <input type="number" name="s2_coin_power" value="4" min="-20" max="20">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Coins</label>
+                                    <input type="number" name="s2_num_coins" value="2" min="1" max="5">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Heads %</label>
+                                    <input type="number" name="s2_heads_chance" value="50" min="0" max="100">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Paralyze</label>
+                                    <input type="number" name="s2_paralyze" value="0" min="0" max="5">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-skill2-only>
+                            <legend class="sim-legend">Offense Level</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Level</label>
+                                    <input type="number" name="s2_offense_level" value="40" min="1" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Up</label>
+                                    <input type="number" name="s2_offense_up" value="0" min="0" max="50">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Down</label>
+                                    <input type="number" name="s2_offense_down" value="0" min="0" max="50">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-defense-only>
+                            <legend class="sim-legend">Defense Level</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Base Level</label>
+                                    <input type="number" name="s2_defense_level" value="40" min="1" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Up</label>
+                                    <input type="number" name="s2_defense_up" value="0" min="0" max="50">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Level Down</label>
+                                    <input type="number" name="s2_defense_down" value="0" min="0" max="50">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-both-only>
+                            <legend class="sim-legend">Damage Modifiers</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Damage Up %</label>
+                                    <input type="number" name="s2_damage_up" value="0" min="0" max="500">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Damage Down %</label>
+                                    <input type="number" name="s2_damage_down" value="0" min="0" max="100">
+                                </div>
+                                <div class="sim-field sim-field-checkbox">
+                                    <input type="checkbox" id="s2_is_critical" name="s2_is_critical">
+                                    <label for="s2_is_critical">Critical</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-damage-only>
+                            <legend class="sim-legend">Resistances</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Sin Resist</label>
+                                    <select name="s2_sin_resist">
+                                        <option value="2.0">Fatal (×2)</option>
+                                        <option value="1.0" selected>Normal (×1)</option>
+                                        <option value="0.75">Endure (×0.75)</option>
+                                        <option value="0.5">Resist (×0.5)</option>
+                                        <option value="-1">Immune</option>
+                                    </select>
+                                </div>
+                                <div class="sim-field">
+                                    <label>Phys Resist</label>
+                                    <select name="s2_phys_resist">
+                                        <option value="2.0">Fatal (×2)</option>
+                                        <option value="1.0" selected>Normal (×1)</option>
+                                        <option value="0.75">Endure (×0.75)</option>
+                                        <option value="0.5">Resist (×0.5)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="sim-fieldset" data-damage-only>
+                            <legend class="sim-legend">Status Effects</legend>
+                            <div class="sim-field-grid">
+                                <div class="sim-field">
+                                    <label>Fragile</label>
+                                    <input type="number" name="s2_fragile" value="0" min="0" max="99">
+                                </div>
+                                <div class="sim-field">
+                                    <label>Protection</label>
+                                    <input type="number" name="s2_protection" value="0" min="0" max="99">
+                                </div>
+                                <div class="sim-field sim-field-checkbox">
+                                    <input type="checkbox" id="s2_staggered" name="s2_staggered">
+                                    <label for="s2_staggered">Staggered</label>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="sim-actions">
+                <button type="reset" class="sim-btn sim-btn-reset">Reset</button>
+                <button type="submit" class="sim-btn sim-btn-calculate">Calculate</button>
+            </div>
+
+        </form>
+
+
+        <div class="sim-results" id="simulatorResults">
+            <div class="sim-clash-banner" id="hoverBanner">
+                <img src="/static/images/attackerStill.gif" data-still="/static/images/attackerStill.gif"
+                    data-moving="/static/images/attackerMoving.png" data-wins="/static/images/attackerWins.png"
+                    data-loses="/static/images/defenderLoses.png" alt="Attacker"
+                    class="sim-banner-character sim-banner-character-left" id="bannerAttacker">
+                <img src="/static/images/defenderStill.gif" data-still="/static/images/defenderStill.gif"
+                    data-moving="/static/images/defenderMoving.png" data-wins="/static/images/defenderWins.png"
+                    data-loses="/static/images/attackerLoses.png" alt="Defender"
+                    class="sim-banner-character sim-banner-character-right" id="bannerDefender">
+            </div>
+            <div class="sim-results-placeholder" id="resultsPlaceholder">
+                <span></span>
+                <p>Select a mode and fill the form to see results</p>
+            </div>
+            <div id="resultsContent" style="display: none;"></div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        const skill2Title = document.getElementById('skill2Title');
+        const form = document.getElementById('simulatorForm');
+        const resultsContent = document.getElementById('resultsContent');
+        const resultsPlaceholder = document.getElementById('resultsPlaceholder');
+
+
+        document.querySelectorAll('.sim-mode-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.sim-mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const mode = this.dataset.mode;
+                document.getElementById('calculatorMode').value = mode;
+
+                const damageFields = document.querySelectorAll('[data-damage-only]');
+                const defenseFields = document.querySelectorAll('[data-defense-only]');
+                const skill2Fields = document.querySelectorAll('[data-skill2-only]');
+                const bothFields = document.querySelectorAll('[data-both-only]');
+
+                if (mode === 'clash') {
+                    skill2Title.textContent = 'Defender';
+                    damageFields.forEach(f => f.style.display = 'none');
+                    defenseFields.forEach(f => f.style.display = 'none');
+                    skill2Fields.forEach(f => f.style.display = 'block');
+                    bothFields.forEach(f => f.style.display = 'none');
+                } else if (mode === 'damage') {
+                    skill2Title.textContent = 'Enemy Status';
+                    damageFields.forEach(f => f.style.display = 'block');
+                    defenseFields.forEach(f => f.style.display = 'block');
+                    skill2Fields.forEach(f => f.style.display = 'none');
+                    bothFields.forEach(f => f.style.display = 'none');
+                } else {
+                    skill2Title.textContent = 'Defender';
+                    damageFields.forEach(f => f.style.display = 'block');
+                    defenseFields.forEach(f => f.style.display = 'block');
+                    skill2Fields.forEach(f => f.style.display = 'block');
+                    bothFields.forEach(f => f.style.display = 'block');
+                }
+            });
+        });
+
+
+        document.querySelector('[data-mode="clash"]').click();
+
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            try {
+                const response = await fetch('/simulator/calculate', {
+                    method: 'POST',
+                    body: params
+                });
+
+                const data = await response.json();
+                displayResults(data);
+                updateWinner(data);
+            } catch (error) {
+                console.error('Error:', error);
+                resultsContent.innerHTML = '<p class="text-red-500">Error calculating results</p>';
+            }
+        });
+
+        function displayResults(data) {
+            resultsPlaceholder.style.display = 'none';
+            resultsContent.style.display = 'block';
+
+            let html = '';
+
+
+            if (data.clash) {
+                const c = data.clash;
+                html += `
+                <div class="sim-result-section">
+                    <h3 class="sim-result-title">Clash Results</h3>
+                    <div class="sim-result-stack">
+                        <div class="sim-result-stat sim-stat-attacker">
+                            <span class="sim-stat-label">Attacker Win Rate</span>
+                            <span class="sim-stat-value">${(c.p1_win_rate * 100).toFixed(2)}%</span>
+                        </div>
+                        <div class="sim-result-stat sim-stat-defender">
+                            <span class="sim-stat-label">Defender Win Rate</span>
+                            <span class="sim-stat-value">${(c.p2_win_rate * 100).toFixed(2)}%</span>
+                        </div>
+                        <div class="sim-result-stat sim-stat-draw">
+                            <span class="sim-stat-label">Draw Rate</span>
+                            <span class="sim-stat-value">${(c.draw_rate * 100).toFixed(2)}%</span>
+                        </div>
+                        <div class="sim-result-stat sim-stat-turns">
+                            <span class="sim-stat-label">Expected Turns</span>
+                            <span class="sim-stat-value">${c.expected_turns.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <h4 class="sim-result-subtitle">Most Probable Outcome</h4>
+                    <div class="sim-scenario">
+                        ${formatClashScenario(c.most_probable)}
+                    </div>
+
+                    <h4 class="sim-result-subtitle">Least Probable Outcome</h4>
+                    <div class="sim-scenario">
+                        ${formatClashScenario(c.least_probable)}
+                    </div>
+
+                    <h4 class="sim-result-subtitle">Top 10 Scenarios</h4>
+                    <div class="sim-scenario-list">
+                        ${(c.top_scenarios || []).map(s => `<div class="sim-scenario-item">${formatClashScenario(s)}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+            }
+
+
+            if (data.damage) {
+                const clashData = data.clash || {};
+                const hasBothDamage = data.damage.s1_to_s2 && data.damage.s2_to_s1;
+
+                if (hasBothDamage) {
+                    html += '<div class="sim-damage-grid">';
+                    html += formatDamageSection('Attacker → Defender', data.damage.s1_to_s2, 'attacker', clashData.p1_wins, false);
+                    html += formatDamageSection('Defender → Attacker', data.damage.s2_to_s1, 'defender', clashData.p2_wins, false);
+                    html += '</div>';
+                } else if (data.damage.s1_to_s2) {
+
+                    html += formatDamageSection('Damage Results', data.damage.s1_to_s2, 'attacker', null, true);
+                }
+            }
+
+            resultsContent.innerHTML = html;
+        }
+
+        function formatClashScenario(s) {
+            if (!s) return 'N/A';
+            const winner = s.winner === 'p1' ? 'Attacker Wins' : s.winner === 'p2' ? 'Defender Wins' : 'Draw';
+            return `${winner} | ATK: ${s.p1_final_coins} coins, DEF: ${s.p2_final_coins} coins | ${(s.probability * 100).toFixed(2)}%`;
+        }
+
+        function formatDamageSection(title, d, type, winDist, fullWidth = false) {
+            const typeClass = type === 'attacker' ? 'sim-damage-attacker' : 'sim-damage-defender';
+            const winLabel = type === 'attacker' ? 'Attacker' : 'Defender';
+
+
+            const hasWinDist = winDist && Object.keys(winDist).length > 0;
+            const winDistHtml = hasWinDist ? Object.entries(winDist)
+                .sort((a, b) => b[1] - a[1])
+                .map(([coins, prob]) => `<span>${coins} coins: ${(prob * 100).toFixed(2)}%</span>`)
+                .join(' | ') : null;
+
+
+            const sortedDamageDist = [...(d.damage_distribution || [])].sort((a, b) => b.probability - a.probability);
+
+
+            const winDistSection = winDistHtml ? `
+                <h4 class="sim-result-subtitle">Win Distribution - ${winLabel}</h4>
+                <div class="sim-scenario">
+                    ${winDistHtml}
+                </div>
+            ` : '';
+
+            const content = `
+                <h3 class="sim-result-title">${title}</h3>
+                <div class="sim-result-grid-compact">
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Average</span>
+                        <span class="sim-stat-value">${d.average_damage.toFixed(2)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Highest</span>
+                        <span class="sim-stat-value">${d.highest_damage}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Most Common</span>
+                        <span class="sim-stat-value">${d.most_common_damage}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Median</span>
+                        <span class="sim-stat-value">${d.median_damage}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Lowest</span>
+                        <span class="sim-stat-value">${d.lowest_damage}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Unusual</span>
+                        <span class="sim-stat-value">${getLeastAverageDamage(d.damage_distribution, d.average_damage).split(' ')[0]}</span>
+                    </div>
+                </div>
+
+                ${winDistSection}
+
+                <h4 class="sim-result-subtitle">Damage Distribution</h4>
+                <div class="sim-distribution-table">
+                    ${sortedDamageDist.map(dd =>
+                `<div class="sim-dist-row"><span>${dd.damage} dmg</span><span>${(dd.probability * 100).toFixed(2)}%</span></div>`
+            ).join('')}
+                </div>
+
+                <h4 class="sim-result-subtitle">Most Probable Scenario</h4>
+                <div class="sim-scenario">
+                    ${formatDamageScenario(d.most_probable_scenario)}
+                </div>
+
+                <h4 class="sim-result-subtitle">Least Probable Scenario</h4>
+                <div class="sim-scenario">
+                    ${formatDamageScenario(d.least_probable_scenario)}
+                </div>
+
+                <h4 class="sim-result-subtitle">Top 10 Most Probable</h4>
+                <div class="sim-scenario-list">
+                    ${(d.top_scenarios || []).map(s => `<div class="sim-scenario-item">${formatDamageScenario(s)}</div>`).join('')}
+                </div>
+
+                <h4 class="sim-result-subtitle">Multiplier Breakdown</h4>
+                <div class="sim-multiplier-row">
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Sin Resist (A)</span>
+                        <span class="sim-stat-value">${d.multipliers.sin_resist.toFixed(3)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Phys Resist (B)</span>
+                        <span class="sim-stat-value">${d.multipliers.phys_resist.toFixed(3)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Off/Def (C)</span>
+                        <span class="sim-stat-value">${d.multipliers.offense_defense.toFixed(3)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Clash Bonus (D)</span>
+                        <span class="sim-stat-value">${d.multipliers.clash_bonus.toFixed(3)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Critical (E)</span>
+                        <span class="sim-stat-value">${d.multipliers.critical.toFixed(3)}</span>
+                    </div>
+                </div>
+                <div class="sim-multiplier-totals">
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Static Total</span>
+                        <span class="sim-stat-value">${d.multipliers.static_total.toFixed(3)}</span>
+                    </div>
+                    <div class="sim-result-stat">
+                        <span class="sim-stat-label">Dynamic Total</span>
+                        <span class="sim-stat-value">${d.multipliers.dynamic_total.toFixed(3)}</span>
+                    </div>
+                </div>
+            `;
+
+            if (fullWidth) {
+                return `<div class="sim-result-section">${content}</div>`;
+            }
+
+            return `<div class="sim-damage-column ${typeClass}">${content}</div>`;
+        }
+
+        function formatDamageScenario(s) {
+            if (!s) return 'N/A';
+            const seq = (s.sequence || []).map(flip =>
+                flip === 'H'
+                    ? '<img src="/static/images/coinIconHead.png" alt="H" class="inline-block w-5 h-5">'
+                    : '<img src="/static/images/coinIconTails.png" alt="T" class="inline-block w-5 h-5">'
+            ).join(' ');
+            const perCoin = (s.per_coin_damage || []).join(' + ');
+            return `${seq} → ${perCoin} = ${s.total_damage} dmg (${(s.probability * 100).toFixed(2)}%)`;
+        }
+
+        function getLeastAverageDamage(distribution, avgDamage) {
+            if (!distribution || distribution.length === 0) return 'N/A';
+            const furthest = distribution.reduce((a, b) =>
+                Math.abs(a.damage - avgDamage) > Math.abs(b.damage - avgDamage) ? a : b
+            );
+            return `${furthest.damage} dmg (${(furthest.probability * 100).toFixed(2)}%)`;
+        }
+
+
+        const calculateBtn = document.querySelector('.sim-btn-calculate');
+        const hoverBanner = document.getElementById('hoverBanner');
+        const bannerAttacker = document.getElementById('bannerAttacker');
+        const bannerDefender = document.getElementById('bannerDefender');
+
+
+        let lastWinner = null;
+        let attackerWinRate = 0;
+        let defenderWinRate = 0;
+
+        calculateBtn.addEventListener('mouseenter', function () {
+            hoverBanner.classList.add('characters-clash');
+            hoverBanner.classList.remove('attacker-wins', 'defender-wins');
+
+            bannerAttacker.style.transform = '';
+            bannerDefender.style.transform = '';
+            bannerAttacker.src = bannerAttacker.dataset.moving;
+            bannerDefender.src = bannerDefender.dataset.moving;
+        });
+
+        calculateBtn.addEventListener('mouseleave', function () {
+            if (lastWinner === 'attacker') {
+                bannerAttacker.style.transform = `translateX(calc(50cqw - 50% - 4.5rem))`;
+                bannerDefender.style.transform = `translateX(calc(-50cqw + 50% + 4.5rem))`;
+
+                hoverBanner.classList.remove('characters-clash');
+                hoverBanner.classList.add('attacker-wins');
+                bannerAttacker.src = bannerAttacker.dataset.wins;
+                bannerDefender.src = bannerAttacker.dataset.loses;
+
+                requestAnimationFrame(() => {
+                    const winRate = attackerWinRate;
+                    const winnerKnockback = 8 * (1 - winRate);
+                    const loserKnockback = 10 + (28 * Math.pow(winRate, 2));
+
+                    bannerAttacker.style.transform = `translateX(calc(50cqw - 50% - 4.5rem - ${winnerKnockback}cqw))`;
+                    bannerDefender.style.transform = `translateX(calc(-50cqw + 50% + 4.5rem + ${loserKnockback}cqw))`;
+                });
+
+            } else if (lastWinner === 'defender') {
+                bannerDefender.style.transform = `translateX(calc(-50cqw + 50% + 4.5rem))`;
+                bannerAttacker.style.transform = `translateX(calc(50cqw - 50% - 4.5rem))`;
+
+                hoverBanner.classList.remove('characters-clash');
+                hoverBanner.classList.add('defender-wins');
+                bannerDefender.src = bannerDefender.dataset.wins;
+                bannerAttacker.src = bannerDefender.dataset.loses;
+
+                requestAnimationFrame(() => {
+                    const winRate = defenderWinRate;
+                    const winnerKnockback = 8 * (1 - winRate);
+                    const loserKnockback = 10 + (28 * Math.pow(winRate, 2));
+
+                    bannerDefender.style.transform = `translateX(calc(-50cqw + 50% + 4.5rem + ${winnerKnockback}cqw))`;
+                    bannerAttacker.style.transform = `translateX(calc(50cqw - 50% - 4.5rem - ${loserKnockback}cqw))`;
+                });
+
+            } else {
+                hoverBanner.classList.remove('characters-clash');
+                bannerAttacker.src = bannerAttacker.dataset.still;
+                bannerDefender.src = bannerDefender.dataset.still;
+                bannerAttacker.style.transform = '';
+                bannerDefender.style.transform = '';
+            }
+        });
+
+
+        function updateWinner(data) {
+            if (data.clash) {
+                attackerWinRate = data.clash.p1_win_rate;
+                defenderWinRate = data.clash.p2_win_rate;
+
+                if (data.clash.p1_win_rate > data.clash.p2_win_rate) {
+                    lastWinner = 'attacker';
+                } else if (data.clash.p2_win_rate > data.clash.p1_win_rate) {
+                    lastWinner = 'defender';
+                } else {
+                    lastWinner = null;
+                }
+            } else {
+                lastWinner = null;
+                attackerWinRate = 0;
+                defenderWinRate = 0;
+            }
+        }
+
+
+        function resetBannerToStill() {
+            lastWinner = null;
+            attackerWinRate = 0;
+            defenderWinRate = 0;
+            hoverBanner.classList.remove('characters-clash', 'attacker-wins', 'defender-wins');
+            bannerAttacker.src = bannerAttacker.dataset.still;
+            bannerDefender.src = bannerDefender.dataset.still;
+            bannerAttacker.style.transform = '';
+            bannerDefender.style.transform = '';
+        }
+    </script>
+</body>
+
+</html>
+{{end}}

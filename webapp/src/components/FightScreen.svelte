@@ -2,9 +2,16 @@
   import { navigate, playerSkills, currentJob } from '../stores.js';
   import SupremeSkillEngine from '../../LexerParser.js';
   import skillData from '../../skill_registry.json';
+  import confetti from 'canvas-confetti';
 
   let showModal = false;
   let jobText = "";
+
+  let isHovering = false;
+  let battleFought = false;
+  let playerWon = false;
+
+  $: isActive = isHovering || showModal;
 
   const engine = new SupremeSkillEngine(skillData);
 
@@ -35,6 +42,31 @@
        };
     }).sort((a,b) => b.value - a.value);
 
+    // Evaluate win condition (>= 75% skills active)
+    if ($currentJob.skills.length > 0) {
+      const activeCount = $currentJob.skills.filter(s => s.active).length;
+      playerWon = (activeCount / $currentJob.skills.length) >= 0.75;
+      battleFought = true;
+
+      // Disparar confetes após a animação de clash (500ms)
+      setTimeout(() => {
+        if (playerWon) {
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 }
+          });
+        } else {
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#000000', '#ff0000', '#bb0000', '#222222']
+          });
+        }
+      }, 500);
+    }
+
     // Update job description
     $currentJob.title = "Vaga Inspecionada";
     $currentJob.description = jobText; // Guarda TODO o texto em vez de fatiar
@@ -61,7 +93,10 @@
   <!-- HEADER -->
   <div class="header">
     <div class="title">{$currentJob.title}</div>
-    <button class="add-job-btn" on:click={() => showModal = true}>+</button>
+    <button class="add-job-btn" 
+            on:click={() => showModal = true}
+            on:mouseenter={() => isHovering = true}
+            on:mouseleave={() => isHovering = false}>+</button>
   </div>
 
   <!-- SUB HEADER -->
@@ -70,7 +105,7 @@
     <div class="description-wrapper">
       
       <!-- Base (mantém o grid da página seguro) -->
-      <div class="description" on:click={() => showFullDescription = true}>
+      <div role="button" tabindex="0" class="description" on:click={() => showFullDescription = true} on:keydown={(e) => e.key === 'Enter' && (showFullDescription = true)}>
         <div class="short-text">
           { ($currentJob.description || "").length > 40 
               ? $currentJob.description.substring(0, 40) + '...' 
@@ -82,7 +117,7 @@
 
       <!-- Overlay Absoluto -->
       {#if showFullDescription}
-        <div class="description expanded" on:click={() => showFullDescription = false}>
+        <div role="button" tabindex="0" class="description expanded" on:click={() => showFullDescription = false} on:keydown={(e) => e.key === 'Enter' && (showFullDescription = false)}>
           <div class="full-text">{$currentJob.description}</div>
           <span class="plus">−</span>
         </div>
@@ -113,7 +148,10 @@
 
   <!-- BATTLE -->
   <div class="battle">
-    <img src="/battle.gif" alt="battle scene" />
+    <div class="arena">
+      <img src="/herofight.png" class="hero-img {isActive ? 'clashing' : ''} {battleFought && !isActive && playerWon ? 'won' : ''} {battleFought && !isActive && !playerWon ? 'lost' : ''}" alt="Hero" />
+      <img src="/bossfight.png" class="boss-img {isActive ? 'clashing' : ''} {battleFought && !isActive && !playerWon ? 'won' : ''} {battleFought && !isActive && playerWon ? 'lost' : ''}" alt="Boss" />
+    </div>
   </div>
 
   <!-- Espaçador para menu fixo -->
@@ -123,10 +161,10 @@
 <!-- Menu fixo igual ao PlayerCard -->
 <div class="fixed-menu">
   <div class="footer-pill">
-    <div class="icon-btn" on:click={() => navigate('/')}>
+    <div role="button" tabindex="0" class="icon-btn" on:click={() => navigate('/')} on:keydown={(e) => e.key === 'Enter' && navigate('/')}>
       <img src="/usericon.png" alt="Perfil" />
     </div>
-    <div class="icon-btn" on:click={() => navigate('/fight')}>
+    <div role="button" tabindex="0" class="icon-btn" on:click={() => navigate('/fight')} on:keydown={(e) => e.key === 'Enter' && navigate('/fight')}>
       <img src="/battleicon.png" alt="Batalha" />
     </div>
     <div class="icon-btn">
@@ -432,14 +470,71 @@
     border-radius: 24px;
     overflow: hidden;
     border: 3px solid #158425;
-    background: #0E540C;
+    background: #0E540C url('/background.jpg') center/cover no-repeat;
+    height: 300px;
+    position: relative;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
   }
 
-  .battle img {
+  .arena {
+    position: relative;
     width: 100%;
-    display: block;
-    object-fit: cover;
-    max-height: 300px;
+    height: 100%;
+  }
+
+  .hero-img, .boss-img {
+    height: 80%;
+    position: absolute;
+    top: 50%;
+    object-fit: contain;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  /* Default Distances */
+  .hero-img {
+    left: 2%;
+    transform: translateY(-50%);
+  }
+
+  .boss-img {
+    right: 2%;
+    transform: translateY(-50%);
+  }
+
+  /* Clashing Animation on Hover */
+  .hero-img.clashing {
+    left: 45%;
+    transform: translateY(-50%) translateX(-50%);
+    z-index: 10;
+  }
+  .boss-img.clashing {
+    right: 45%;
+    transform: translateY(-50%) translateX(50%);
+    z-index: 10;
+  }
+
+  /* Result: Winner stays in middle, pops out and recoils slightly backwards */
+  .hero-img.won {
+    left: 40%;
+    transform: translateY(-50%) translateX(-50%) scale(1.1);
+    z-index: 10;
+  }
+  .boss-img.won {
+    right: 40%;
+    transform: translateY(-50%) translateX(50%) scale(1.1);
+    z-index: 10;
+  }
+
+  /* Result: Loser retreats and shrinks */
+  .hero-img.lost {
+    left: 2%;
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0.9;
+  }
+  .boss-img.lost {
+    right: 2%;
+    transform: translateY(-50%) scale(0.8);
+    opacity: 0.9;
   }
 
   /* Espaçador */
