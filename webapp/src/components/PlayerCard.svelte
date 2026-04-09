@@ -2,8 +2,28 @@
   import { onMount } from "svelte";
   import { navigate, playerSkills, playerProfile } from "../stores.js"; // <-- ADICIONE ESTA LINHA
   import skillData from "../../skill_registry.json";
+  import html2canvas from "html2canvas";
 
   let fileInput;
+  let cardElement;
+
+  async function exportCard() {
+    if (!cardElement) return;
+    try {
+      const canvas = await html2canvas(cardElement, {
+        backgroundColor: '#d4eed7',
+        scale: 2,
+        useCORS: true
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = 'ficha_uniquest.png';
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Falha ao exportar imagem:', err);
+    }
+  }
 
   function handleImageUpload(event) {
     const file = event.target.files[0];
@@ -75,7 +95,7 @@
   });
 </script>
 
-<div class="container">
+<div class="container" bind:this={cardElement}>
   <div class="left">
     <!-- Foto de perfil com upload -->
     <div class="image-container" on:click={triggerUpload}>
@@ -99,6 +119,15 @@
       />
 
       <div class="xp-container">
+        <!-- O botão silencioso fica aqui (ao lado do status) -->
+        <button class="export-btn" on:click={exportCard} title="Exportar Ficha (GitHub README)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+
         <div class="bar">
           <div class="bar-fill" style="width: {xpPercent}%"></div>
         </div>
@@ -288,6 +317,25 @@
     display: flex;
     align-items: center;
     gap: 16px;
+  }
+
+  .export-btn {
+    background: transparent;
+    border: none;
+    color: #158425;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .export-btn:hover {
+    background: rgba(21, 132, 37, 0.1);
+    color: #0e540c;
+    transform: translateY(-2px);
   }
 
   .bar {
