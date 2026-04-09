@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { navigate } from "../stores.js"; // <-- ADICIONE ESTA LINHA
+  import skillData from "../../skill_registry.json";
 
   let playerName = "Nome do Jogador";
   let playerClass = "";
@@ -37,16 +38,14 @@
     : "espadaclasse.png";
 
   // Lista de habilidades
-  let skillsList = [
-    { name: "JavaScript", selected: false, icon: "bug.png" },
-    { name: "React", selected: true, icon: "pc.png" },
-    { name: "Node.js", selected: false, icon: "distintivo.png" },
-    { name: "Python", selected: false, icon: "document.png" },
-    { name: "Docker", selected: true, icon: "bug.png" },
-    { name: "Figma", selected: false, icon: "pc.png" },
-    { name: "Scrum", selected: false, icon: "distintivo.png" },
-    { name: "TypeScript", selected: false, icon: "document.png" },
-  ];
+  const allSkills = Array.from(new Set(Object.values(skillData).flat()));
+  const skillIcons = ["bug.png", "pc.png", "distintivo.png", "document.png"];
+  
+  let skillsList = allSkills.map((name, i) => ({
+    name,
+    selected: false,
+    icon: skillIcons[i % skillIcons.length]
+  }));
 
   function toggleSkill(index) {
     skillsList[index].selected = !skillsList[index].selected;
