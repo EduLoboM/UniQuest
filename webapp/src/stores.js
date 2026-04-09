@@ -49,3 +49,6 @@ export const currentJob = writable({
   description: "",
   skills: []
 });
+
+// Courses database: initialized from static JSON, extended at runtime with auto-generated Udemy links
+export const coursesStore = persistedWritable('uniquest_courses', null);

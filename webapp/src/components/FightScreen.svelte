@@ -1,7 +1,8 @@
 <script>
-  import { navigate, playerSkills, currentJob } from '../stores.js';
+  import { navigate, playerSkills, currentJob, coursesStore } from '../stores.js';
   import SupremeSkillEngine from '../../LexerParser.js';
   import skillData from '../../skill_registry.json';
+  import staticCourses from '../../skill_courses.json';
   import confetti from 'canvas-confetti';
 
   let showModal = false;
@@ -19,8 +20,29 @@
     $currentJob.skills = [];
   }
 
+  // Initialize coursesStore from static JSON if empty
+  if (!$coursesStore) {
+    $coursesStore = { ...staticCourses };
+  }
+
   // Alternar descrição completa
   let showFullDescription = false;
+
+  /**
+   * Gera link de busca Udemy para uma skill
+   */
+  function generateUdemyLink(skillName) {
+    const encoded = encodeURIComponent(skillName.toLowerCase());
+    return `https://www.udemy.com/courses/search/?q=${encoded}&lang=pt`;
+  }
+
+  /**
+   * Gera link de busca YouTube para uma skill
+   */
+  function generateYoutubeLink(skillName) {
+    const query = skillName.toLowerCase().replace(/\s+/g, '+');
+    return `https://www.youtube.com/results?search_query=curso+${query}`;
+  }
 
   function parseJob() {
     if (!jobText.trim()) return;
@@ -28,19 +50,57 @@
     // Parse the text through LexerParser
     const result = engine.parseVaga(jobText, 'Outros'); 
     
+    // Track new skills found
+    const existingSkillKeys = new Set($playerSkills.map(s => s.name.toLowerCase()));
+    const newSkills = [];
+    const skillIcons = ["bug.png", "pc.png", "distintivo.png", "document.png"];
+
     // Replace skills
     $currentJob.skills = Object.entries(result).map(([key, weight]) => {
        const originalSkill = $playerSkills.find(s => s.name.toLowerCase() === key);
        const active = originalSkill ? originalSkill.selected : false;
-       const name = originalSkill ? originalSkill.name : key.toUpperCase();
+       const name = originalSkill ? originalSkill.name : key.charAt(0).toUpperCase() + key.slice(1);
        
+       // Auto-register new skill if not in playerSkills
+       if (!existingSkillKeys.has(key)) {
+         const titleName = key.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+         newSkills.push({
+           name: titleName,
+           selected: false,
+           icon: skillIcons[($playerSkills.length + newSkills.length) % skillIcons.length]
+         });
+         existingSkillKeys.add(key);
+
+         // Auto-generate course entries for this new skill
+         if (!$coursesStore[key]) {
+           $coursesStore[key] = [
+             {
+               title: `${titleName} (YouTube)`,
+               url: generateYoutubeLink(titleName)
+             },
+             {
+               title: `${titleName} na Udemy`,
+               url: generateUdemyLink(titleName)
+             }
+           ];
+         }
+       }
+
        return {
-         name,
+         name: originalSkill ? originalSkill.name : key.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
          icon: originalSkill ? originalSkill.icon : "document.png",
          value: Math.min(Math.max(weight, 5), 100),
          active
        };
     }).sort((a,b) => b.value - a.value);
+
+    // Add new skills to the player store
+    if (newSkills.length > 0) {
+      $playerSkills = [...$playerSkills, ...newSkills];
+      // Force coursesStore reactivity
+      $coursesStore = { ...$coursesStore };
+      console.log(`✨ ${newSkills.length} nova(s) skill(s) registrada(s) automaticamente!`);
+    }
 
     // Evaluate win condition (>= 75% skills active)
     if ($currentJob.skills.length > 0) {

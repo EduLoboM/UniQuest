@@ -1,110 +1,282 @@
 {
   "c++": [
     {
-      "title": "Aprender C++ (Busca Atualizada)",
+      "title": "Aprender C++ (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+completo+c%2B%2B"
+    },
+    {
+      "title": "C++ na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=c%2B%2B&lang=pt"
     }
   ],
   "c#": [
     {
-      "title": "C# Completo e Orientação a Objetos",
+      "title": "C# Completo (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+c%23+iniciante"
+    },
+    {
+      "title": "C# na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=c%23&lang=pt"
     }
   ],
   "matemática 3d": [
     {
-      "title": "3D Math for Game Development",
+      "title": "3D Math for Game Dev (YouTube)",
       "url": "https://www.youtube.com/results?search_query=3d+math+for+game+development"
+    },
+    {
+      "title": "Matemática 3D na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=3d+math+game+development&lang=pt"
     }
   ],
   "oop": [
     {
-      "title": "Programação Orientada a Objetos",
+      "title": "Programação Orientada a Objetos (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+de+programacao+orientada+a+objetos"
+    },
+    {
+      "title": "OOP na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=programacao+orientada+a+objetos&lang=pt"
     }
   ],
   "unity": [
     {
-      "title": "Unity Beginner Tutorial",
+      "title": "Unity Beginner Tutorial (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+unity+iniciante"
+    },
+    {
+      "title": "Unity na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=unity+game+development&lang=pt"
     }
   ],
   "unreal engine": [
     {
-      "title": "Unreal Engine 5 Beginner Tutorial",
+      "title": "Unreal Engine 5 (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+unreal+engine+5+iniciante"
+    },
+    {
+      "title": "Unreal Engine na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=unreal+engine+5&lang=pt"
     }
   ],
   "git": [
     {
-      "title": "Git e Github para Iniciantes",
+      "title": "Git e Github Completo (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+git+e+github+completo"
+    },
+    {
+      "title": "Git na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=git+github&lang=pt"
+    }
+  ],
+  "shaders": [
+    {
+      "title": "Introdução a Shaders (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=shader+programming+tutorial"
+    },
+    {
+      "title": "Shaders na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=shader+programming&lang=pt"
+    }
+  ],
+  "hlsl": [
+    {
+      "title": "HLSL Shader Language (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=hlsl+shader+tutorial"
+    },
+    {
+      "title": "HLSL na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=hlsl+shader&lang=pt"
+    }
+  ],
+  "multiplayer": [
+    {
+      "title": "Multiplayer Game Dev (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=multiplayer+game+development+tutorial"
+    },
+    {
+      "title": "Multiplayer na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=multiplayer+game+development&lang=pt"
     }
   ],
   "adobe photoshop": [
     {
-      "title": "Curso Completo de Photoshop Grátis",
+      "title": "Curso Completo de Photoshop (YouTube)",
       "url": "https://www.youtube.com/results?search_query=curso+completo+photoshop"
+    },
+    {
+      "title": "Photoshop na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=adobe+photoshop&lang=pt"
+    }
+  ],
+  "ilustração": [
+    {
+      "title": "Ilustração Digital (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=curso+ilustracao+digital"
+    },
+    {
+      "title": "Ilustração na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=ilustracao+digital&lang=pt"
+    }
+  ],
+  "composição visual": [
+    {
+      "title": "Composição Visual para Artistas (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=composicao+visual+artistas"
+    },
+    {
+      "title": "Composição Visual na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=composicao+visual&lang=pt"
+    }
+  ],
+  "anatomia": [
+    {
+      "title": "Anatomia para Desenho (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=anatomia+para+desenho+artistas"
+    },
+    {
+      "title": "Anatomia Artística na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=anatomia+artistica+desenho&lang=pt"
     }
   ],
   "teoria das cores": [
     {
-      "title": "Teoria das Cores para Artistas Digitais",
+      "title": "Teoria das Cores para Artistas (YouTube)",
       "url": "https://www.youtube.com/results?search_query=teoria+das+cores+artistas+digitais"
+    },
+    {
+      "title": "Teoria das Cores na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=teoria+das+cores&lang=pt"
+    }
+  ],
+  "ui design": [
+    {
+      "title": "UI Design Fundamentos (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=ui+design+fundamentos+tutorial"
+    },
+    {
+      "title": "UI Design na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=ui+design&lang=pt"
     }
   ],
   "animação 2d": [
     {
-      "title": "Fundamentos da Animação 2D",
+      "title": "Fundamentos da Animação 2D (YouTube)",
       "url": "https://www.youtube.com/results?search_query=fundamentos+animacao+2d+tutorial"
-    }
-  ],
-  "tcc": [
+    },
     {
-      "title": "Introdução à Terapia Cognitivo-Comportamental",
-      "url": "https://www.youtube.com/results?search_query=terapia+cognitivo+comportamental+tcc+aula"
-    }
-  ],
-  "testes psicológicos": [
-    {
-      "title": "Avaliação Psicológica e Bateria de Testes",
-      "url": "https://www.youtube.com/results?search_query=avaliacao+psicologica+e+testes"
-    }
-  ],
-  "terapia sistêmica": [
-    {
-      "title": "Bases Práticas da Terapia Sistêmica",
-      "url": "https://www.youtube.com/results?search_query=terapia+sistemica+psicologia+aula"
-    }
-  ],
-  "psiquiatria": [
-    {
-      "title": "Psiquiatria Básica - Aulas Intensivas",
-      "url": "https://www.youtube.com/results?search_query=psiquiatria+basica+resumo"
-    }
-  ],
-  "psicopatologia": [
-    {
-      "title": "Entendendo a Psicopatologia",
-      "url": "https://www.youtube.com/results?search_query=psicopatologia+aula+completa"
-    }
-  ],
-  "psicodiagnóstico": [
-    {
-      "title": "Introdução Prática ao Psicodiagnóstico",
-      "url": "https://www.youtube.com/results?search_query=psicodiagnostico+na+pratica"
+      "title": "Animação 2D na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=animacao+2d&lang=pt"
     }
   ],
   "pintura digital": [
     {
-      "title": "Pintura Digital Descomplicada",
+      "title": "Pintura Digital Descomplicada (YouTube)",
       "url": "https://www.youtube.com/results?search_query=pintura+digital+descomplicada+tutorial"
+    },
+    {
+      "title": "Pintura Digital na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=pintura+digital&lang=pt"
     }
   ],
   "realismo": [
     {
-      "title": "Técnicas de Textura de Estilo Realista",
+      "title": "Técnicas de Realismo (YouTube)",
       "url": "https://www.youtube.com/results?search_query=textura+realista+pintura+digital"
+    },
+    {
+      "title": "Realismo Digital na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=pintura+realismo+digital&lang=pt"
+    }
+  ],
+  "tcc": [
+    {
+      "title": "Terapia Cognitivo-Comportamental (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=terapia+cognitivo+comportamental+tcc+aula"
+    },
+    {
+      "title": "TCC na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=terapia+cognitivo+comportamental&lang=pt"
+    }
+  ],
+  "testes psicológicos": [
+    {
+      "title": "Avaliação Psicológica e Testes (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=avaliacao+psicologica+e+testes"
+    },
+    {
+      "title": "Testes Psicológicos na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=testes+psicologicos+avaliacao&lang=pt"
+    }
+  ],
+  "terapia sistêmica": [
+    {
+      "title": "Terapia Sistêmica (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=terapia+sistemica+psicologia+aula"
+    },
+    {
+      "title": "Terapia Sistêmica na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=terapia+sistemica&lang=pt"
+    }
+  ],
+  "psiquiatria": [
+    {
+      "title": "Psiquiatria Básica (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=psiquiatria+basica+resumo"
+    },
+    {
+      "title": "Psiquiatria na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=psiquiatria+basica&lang=pt"
+    }
+  ],
+  "psicopatologia": [
+    {
+      "title": "Entendendo a Psicopatologia (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=psicopatologia+aula+completa"
+    },
+    {
+      "title": "Psicopatologia na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=psicopatologia&lang=pt"
+    }
+  ],
+  "psicodiagnóstico": [
+    {
+      "title": "Psicodiagnóstico na Prática (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=psicodiagnostico+na+pratica"
+    },
+    {
+      "title": "Psicodiagnóstico na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=psicodiagnostico&lang=pt"
+    }
+  ],
+  "psicanálise": [
+    {
+      "title": "Introdução à Psicanálise (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=introducao+psicanalise+freud"
+    },
+    {
+      "title": "Psicanálise na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=psicanalise&lang=pt"
+    }
+  ],
+  "entrevistas": [
+    {
+      "title": "Técnicas de Entrevista Psicológica (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=tecnicas+de+entrevista+psicologica"
+    },
+    {
+      "title": "Entrevistas na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=tecnicas+entrevista&lang=pt"
+    }
+  ],
+  "crp ativo": [
+    {
+      "title": "Como obter o CRP (YouTube)",
+      "url": "https://www.youtube.com/results?search_query=como+obter+crp+psicologia"
+    },
+    {
+      "title": "Registro CRP na Udemy",
+      "url": "https://www.udemy.com/courses/search/?q=registro+profissional+psicologia&lang=pt"
     }
   ]
 }

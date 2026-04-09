@@ -1,23 +1,131 @@
 <script>
   import { onMount } from "svelte";
-  import { navigate, playerSkills, playerProfile } from "../stores.js"; // <-- ADICIONE ESTA LINHA
+  import { navigate, playerSkills, playerProfile } from "../stores.js";
   import skillData from "../../skill_registry.json";
   import html2canvas from "html2canvas";
 
   let fileInput;
   let cardElement;
+  let skillSearch = "";
 
   async function exportCard() {
-    if (!cardElement) return;
     try {
-      const canvas = await html2canvas(cardElement, {
+      // Cria um card dedicado off-screen para exportação premium
+      const exportDiv = document.createElement('div');
+      exportDiv.style.cssText = `
+        position: fixed; left: -9999px; top: 0;
+        width: 900px; padding: 48px;
+        background: #d4eed7;
+        font-family: 'Space Grotesk', 'JetBrains Mono', sans-serif;
+        color: #0b2f1f; border-radius: 32px;
+        border: 4px solid #158425;
+      `;
+
+      const selectedSkills = $playerSkills.filter(s => s.selected);
+      const totalSkills = $playerSkills.length;
+      const xpVal = selectedSkills.length;
+      const pct = totalSkills > 0 ? Math.round((xpVal / totalSkills) * 100) : 0;
+
+      const skillChips = selectedSkills.slice(0, 5).map(s =>
+        `<span style="
+          display: inline-block; padding: 10px 18px; margin: 5px;
+          background: #0e540c; border: 2px solid #1abc67;
+          border-radius: 12px; font-size: 16px; font-weight: 600;
+          color: #ffffff; font-family: 'JetBrains Mono', monospace;
+        ">${s.name}</span>`
+      ).join('');
+
+      const extraCount = selectedSkills.length > 5 ? selectedSkills.length - 5 : 0;
+
+      const avatarSrc = $playerProfile.avatar || '/perfil.png';
+
+      exportDiv.innerHTML = `
+        <div style="display: flex; gap: 36px; align-items: stretch;">
+          <!-- Coluna Esquerda: Avatar -->
+          <div style="flex-shrink: 0; width: 240px;">
+            <div style="
+              width: 240px; height: 300px; border-radius: 20px; overflow: hidden;
+              border: 4px solid #158425; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            ">
+              <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <div style="
+              margin-top: 16px; text-align: center; background: #eef9ef;
+              border: 2px solid #158425; border-radius: 12px; padding: 12px;
+            ">
+              <div style="font-size: 13px; color: #158425; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Classe</div>
+              <div style="font-size: 18px; font-weight: bold; color: #0e540c; margin-top: 4px;">
+                ${$playerProfile.jobClass || 'Sem Classe'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Direita: Info -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+            <!-- Nome + Subtítulo -->
+            <div style="
+              background: #0e540c; border-radius: 16px; padding: 20px 28px;
+              border: 3px solid #1abc67;
+            ">
+              <div style="font-size: 36px; font-weight: 800; color: #ffffff; line-height: 1.1;">
+                ${$playerProfile.name || 'Aventureiro'}
+              </div>
+              ${$playerProfile.description ? `
+                <div style="font-size: 14px; color: rgba(255,255,255,0.65); margin-top: 8px; font-family: 'JetBrains Mono', monospace; line-height: 1.5;">
+                  ${$playerProfile.description}
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- XP Bar -->
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="flex: 1; height: 28px; background: #ffffff; border-radius: 14px; border: 2px solid #158425; padding: 3px; overflow: hidden;">
+                <div style="height: 100%; width: ${pct}%; background: #1abc67; border-radius: 12px; box-shadow: 0 0 8px #19e697;"></div>
+              </div>
+              <span style="font-size: 22px; font-weight: 800; color: #0e540c; font-family: 'Space Mono', monospace;">${xpVal}/${totalSkills}</span>
+              <span style="font-size: 14px; color: #5a8f6c;">(${pct}%)</span>
+            </div>
+
+            <!-- Skills Ativas (max 5) -->
+            <div style="
+              background: #eef9ef; border-radius: 20px; padding: 20px;
+              border: 2px solid #158425;
+            ">
+              <div style="font-size: 13px; color: #158425; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 12px;">
+                ⚔ Skills Ativas (${xpVal})
+              </div>
+              <div style="line-height: 2.2;">
+                ${skillChips || '<span style="color: #5a8f6c; font-style: italic;">Nenhuma skill ativa</span>'}
+                ${extraCount > 0 ? `<span style="color: #5a8f6c; font-size: 14px; margin-left: 8px;">+${extraCount} mais</span>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="
+          margin-top: 28px; padding-top: 20px; border-top: 3px solid #158425;
+          display: flex; justify-content: space-between; align-items: center;
+        ">
+          <div style="font-size: 20px; font-weight: 800; color: #0e540c; letter-spacing: 1px;">UniQuest</div>
+          <div style="font-size: 13px; color: #5a8f6c; font-family: 'JetBrains Mono', monospace;">${new Date().toLocaleDateString('pt-BR')}</div>
+        </div>
+      `;
+
+      document.body.appendChild(exportDiv);
+
+      const canvas = await html2canvas(exportDiv, {
         backgroundColor: '#d4eed7',
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        logging: false
       });
+
+      document.body.removeChild(exportDiv);
+
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.download = 'ficha_uniquest.png';
+      link.download = `uniquest_${($playerProfile.name || 'card').replace(/\s+/g, '_').toLowerCase()}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -40,32 +148,67 @@
     fileInput.click();
   }
 
-  const tiRoles = [
-    "Desenvolvedor Front-end",
-    "Desenvolvedor Back-end",
-    "DevOps",
-    "UI/UX Designer",
-    "Gerente de Projetos",
-    "QA / Tester",
-    "Analista de Dados",
-    "Engenheiro de Software",
-  ];
-
-  // Mapeamento de cargos para ícones (com as três variantes)
-  const classIconMap = {
-    "Desenvolvedor Front-end": "archerclasse.png",
-    "Desenvolvedor Back-end": "magoclasse.png",
-    DevOps: "bardoclasse.png",
-    "UI/UX Designer": "archerclasse.png",
-    "Gerente de Projetos": "bardoclasse.png",
-    "QA / Tester": "magoclasse.png",
-    "Analista de Dados": "archerclasse.png",
-    "Engenheiro de Software": "magoclasse.png",
+  // ── Cargos Multi-Área ──────────────────────────────────────────────
+  const rolesByArea = {
+    "TI": [
+      "Desenvolvedor Front-end", "Desenvolvedor Back-end", "DevOps",
+      "UI/UX Designer", "Gerente de Projetos TI", "QA / Tester",
+      "Analista de Dados", "Engenheiro de Software", "DBA",
+      "Engenheiro de Machine Learning", "Cientista de Dados",
+      "Arquiteto de Soluções", "SRE / Cloud Engineer"
+    ],
+    "Artes": [
+      "Concept Artist", "Ilustrador Digital", "Animator 2D/3D",
+      "UI Artist", "Character Designer", "Diretor de Arte",
+      "Motion Designer", "Modelador 3D"
+    ],
+    "Psicologia": [
+      "Psicólogo Clínico", "Psicólogo Organizacional",
+      "Neuropsicólogo", "Psicólogo Escolar",
+      "Psicanalista", "Terapeuta Cognitivo-Comportamental"
+    ],
+    "Saúde": [
+      "Enfermeiro(a)", "Fisioterapeuta", "Nutricionista",
+      "Fonoaudiólogo(a)", "Terapeuta Ocupacional"
+    ],
+    "Direito": [
+      "Advogado Cível", "Advogado Trabalhista",
+      "Advogado Tributarista", "Paralegal", "Mediador"
+    ],
+    "Engenharia": [
+      "Engenheiro Civil", "Engenheiro Mecânico",
+      "Engenheiro Elétrico", "Engenheiro de Produção",
+      "Engenheiro Ambiental"
+    ],
+    "Educação": [
+      "Professor(a)", "Pedagogo(a)", "Coordenador Pedagógico",
+      "Instrutor de Cursos", "Tutor EAD"
+    ]
   };
 
-  // Ícone padrão caso não haja mapeamento
-  $: classIcon = $playerProfile.jobClass
-    ? classIconMap[$playerProfile.jobClass] || "espadaclasse.png"
+  // Mapeamento de ícones por área (cicla os 3 ícones disponíveis)
+  const areaIconMap = {
+    "TI": "magoclasse.png",
+    "Artes": "archerclasse.png",
+    "Psicologia": "bardoclasse.png",
+    "Saúde": "bardoclasse.png",
+    "Direito": "magoclasse.png",
+    "Engenharia": "archerclasse.png",
+    "Educação": "bardoclasse.png",
+  };
+
+  // Determina a área do cargo selecionado
+  function getAreaForRole(role) {
+    for (const [area, roles] of Object.entries(rolesByArea)) {
+      if (roles.includes(role)) return area;
+    }
+    return null;
+  }
+
+  // Ícone dinâmico baseado na área do cargo
+  $: currentArea = getAreaForRole($playerProfile.jobClass);
+  $: classIcon = currentArea
+    ? areaIconMap[currentArea] || "espadaclasse.png"
     : "espadaclasse.png";
 
   // Lista de habilidades global
@@ -79,11 +222,18 @@
     }));
   }
 
+  // ── Filtro de busca ────────────────────────────────────────────────
+  $: filteredSkills = skillSearch.trim()
+    ? $playerSkills
+        .map((s, i) => ({...s, originalIndex: i}))
+        .filter(s => s.name.toLowerCase().includes(skillSearch.toLowerCase()))
+    : $playerSkills.map((s, i) => ({...s, originalIndex: i}));
+
   $: xp = $playerSkills.filter(s => s.selected).length;
   $: xpPercent = $playerSkills.length > 0 ? (xp / $playerSkills.length) * 100 : 0;
 
-  function toggleSkill(index) {
-    $playerSkills[index].selected = !$playerSkills[index].selected;
+  function toggleSkill(originalIndex) {
+    $playerSkills[originalIndex].selected = !$playerSkills[originalIndex].selected;
   }
 
   onMount(() => {
@@ -140,27 +290,51 @@
       bind:value={$playerProfile.jobClass}
       class={$playerProfile.jobClass === "" ? "placeholder-active" : ""}
     >
-      <option value="" disabled selected>[Cargo de TI]</option>
-      {#each tiRoles as role}
-        <option value={role}>{role}</option>
+      <option value="" disabled selected>[Selecione seu Cargo]</option>
+      {#each Object.entries(rolesByArea) as [area, roles]}
+        <optgroup label="⚔ {area}">
+          {#each roles as role}
+            <option value={role}>{role}</option>
+          {/each}
+        </optgroup>
       {/each}
     </select>
 
     <textarea placeholder="[Descrição do Jogador]" bind:value={$playerProfile.description}
     ></textarea>
 
+    <!-- Barra de busca de skills -->
+    <div class="search-wrapper">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        class="skill-search"
+        placeholder="Buscar habilidade..."
+        bind:value={skillSearch}
+      />
+      {#if skillSearch}
+        <button class="clear-search" on:click={() => skillSearch = ""}>✕</button>
+      {/if}
+    </div>
+
     <!-- Habilidades com scroll -->
     <div class="skills-scrollable">
-      {#each $playerSkills as skill, i}
+      {#each filteredSkills as skill}
         <div
           class="skill-item"
           class:selected={skill.selected}
-          on:click={() => toggleSkill(i)}
+          on:click={() => toggleSkill(skill.originalIndex)}
         >
           <img src="/{skill.icon}" alt="" class="skill-icon" />
           <span>{skill.name}</span>
         </div>
       {/each}
+      {#if filteredSkills.length === 0 && skillSearch}
+        <div class="no-results">Nenhuma habilidade encontrada</div>
+      {/if}
     </div>
 
     <div class="footer-spacer"></div>
@@ -390,6 +564,19 @@
     cursor: pointer;
   }
 
+  /* Estilo do optgroup */
+  select optgroup {
+    font-weight: bold;
+    color: #0e540c;
+    font-family: "Space Grotesk", sans-serif;
+    padding: 8px 0;
+  }
+
+  select option {
+    font-weight: normal;
+    padding: 6px 12px;
+  }
+
   textarea {
     flex-grow: 1;
     resize: none;
@@ -399,6 +586,75 @@
   textarea::placeholder,
   .placeholder-active {
     color: #5a8f6c;
+  }
+
+  /* ── Barra de busca ─────────────────────────────────────── */
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 18px;
+    color: #158425;
+    pointer-events: none;
+  }
+
+  .skill-search {
+    width: 100%;
+    padding: 14px 44px 14px 48px;
+    border-radius: 16px;
+    border: 2px solid #158425;
+    background: #eef9ef;
+    font-family: "JetBrains Mono", monospace;
+    color: #0b2f1f;
+    font-size: 1.1rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .skill-search:focus {
+    border-color: #1abc67;
+    box-shadow: 0 0 0 3px rgba(26, 188, 103, 0.15);
+    background: #ffffff;
+  }
+
+  .skill-search::placeholder {
+    color: #5a8f6c;
+    opacity: 0.7;
+  }
+
+  .clear-search {
+    position: absolute;
+    right: 14px;
+    background: rgba(21, 132, 37, 0.15);
+    border: none;
+    color: #0e540c;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .clear-search:hover {
+    background: #1abc67;
+    color: #fff;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 20px;
+    color: #5a8f6c;
+    font-style: italic;
+    font-size: 1rem;
   }
 
   /* Habilidades com scroll */

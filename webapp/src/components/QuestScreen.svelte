@@ -1,16 +1,22 @@
 <script>
-  import { navigate, currentJob } from '../stores.js';
-  import coursesData from '../../skill_courses.json';
+  import { navigate, currentJob, coursesStore } from '../stores.js';
+  import staticCourses from '../../skill_courses.json';
+
+  // Initialize coursesStore from static JSON if empty
+  if (!$coursesStore) {
+    $coursesStore = { ...staticCourses };
+  }
 
   // Computed state for extracting unfulfilled skills and fetching related courses
+  $: courses = $coursesStore || staticCourses;
   $: missingSkills = $currentJob.skills
     .filter(s => !s.active)
     .map(s => {
       // Clean string handling
       const nameKey = s.name.trim().toLowerCase();
       
-      // We look into the course dictionary
-      const recommendations = coursesData[nameKey] || [];
+      // We look into the course dictionary (reactive store)
+      const recommendations = courses[nameKey] || [];
       
       return {
         name: s.name,
