@@ -1,48 +1,99 @@
 <script>
-  import { navigate } from '../stores.js';
+  import { navigate, playerSkills, currentJob } from '../stores.js';
+  import SupremeSkillEngine from '../../LexerParser.js';
+  import skillData from '../../skill_registry.json';
 
-  // Dados mockados – você pode depois conectar com props ou stores
-  let jobTitle = "Desenvolvedor Front-end";
-  let company = "TechCorp";
-  let jobClass = "Pleno";
-  let briefDescription = "Atuar com React, TypeScript e design systems...";
+  let showModal = false;
+  let jobText = "";
 
-  let skills = [
-    { name: "React", icon: "pc.png", value: 85, active: true },
-    { name: "TypeScript", icon: "document.png", value: 70, active: true },
-    { name: "Testes", icon: "bug.png", value: 60, active: false },
-    { name: "Acessibilidade", icon: "distintivo.png", value: 75, active: true },
-    { name: "Otimização", icon: "pc.png", value: 80, active: true },
-    { name: "Scrum", icon: "distintivo.png", value: 90, active: true }
-  ];
+  const engine = new SupremeSkillEngine(skillData);
 
-  // Alternar descrição completa (opcional)
+  if (!$currentJob.skills) {
+    $currentJob.skills = [];
+  }
+
+  // Alternar descrição completa
   let showFullDescription = false;
+
+  function parseJob() {
+    if (!jobText.trim()) return;
+    
+    // Parse the text through LexerParser
+    const result = engine.parseVaga(jobText, 'Outros'); 
+    
+    // Replace skills
+    $currentJob.skills = Object.entries(result).map(([key, weight]) => {
+       const originalSkill = $playerSkills.find(s => s.name.toLowerCase() === key);
+       const active = originalSkill ? originalSkill.selected : false;
+       const name = originalSkill ? originalSkill.name : key.toUpperCase();
+       
+       return {
+         name,
+         icon: originalSkill ? originalSkill.icon : "document.png",
+         value: Math.min(Math.max(weight, 5), 100),
+         active
+       };
+    }).sort((a,b) => b.value - a.value);
+
+    // Update job description
+    $currentJob.title = "Vaga Inspecionada";
+    $currentJob.description = jobText; // Guarda TODO o texto em vez de fatiar
+    
+    showModal = false;
+    jobText = "";
+  }
 </script>
+
+{#if showModal}
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2>Colar Descrição da Vaga</h2>
+    <textarea bind:value={jobText} placeholder="Cole aqui a vaga copiada..."></textarea>
+    <div class="modal-actions">
+      <button class="close-btn" on:click={() => showModal = false}>Voltar</button>
+      <button class="parse-btn" on:click={parseJob}>LexerParser( )</button>
+    </div>
+  </div>
+</div>
+{/if}
 
 <div class="fight-container">
   <!-- HEADER -->
   <div class="header">
-    <div class="title">{jobTitle}</div>
-    <div class="company">{company}</div>
+    <div class="title">{$currentJob.title}</div>
+    <button class="add-job-btn" on:click={() => showModal = true}>+</button>
   </div>
 
   <!-- SUB HEADER -->
   <div class="sub-header">
-    <div class="tag">{jobClass}</div>
-    <div class="description" on:click={() => showFullDescription = !showFullDescription}>
+    <div class="tag">Status</div>
+    <div class="description-wrapper">
+      
+      <!-- Base (mantém o grid da página seguro) -->
+      <div class="description" on:click={() => showFullDescription = true}>
+        <div class="short-text">
+          { ($currentJob.description || "").length > 40 
+              ? $currentJob.description.substring(0, 40) + '...' 
+              : $currentJob.description 
+          }
+        </div>
+        <span class="plus">+</span>
+      </div>
+
+      <!-- Overlay Absoluto -->
       {#if showFullDescription}
-        {briefDescription}
-      {:else}
-        {briefDescription.length > 40 ? briefDescription.slice(0, 40) + '...' : briefDescription}
+        <div class="description expanded" on:click={() => showFullDescription = false}>
+          <div class="full-text">{$currentJob.description}</div>
+          <span class="plus">−</span>
+        </div>
       {/if}
-      <span class="plus">{showFullDescription ? '−' : '+'}</span>
+
     </div>
   </div>
 
   <!-- SKILLS -->
   <div class="skills-box">
-    {#each skills as skill}
+    {#each $currentJob.skills as skill}
       <div class="skill">
         <div class="skill-header">
           <img src="/{skill.icon}" alt="" class="icon" />
@@ -106,8 +157,7 @@
     margin-bottom: 16px;
   }
 
-  .title,
-  .company {
+  .title {
     flex: 1;
     background: #0E540C;
     color: #19E697;
@@ -119,6 +169,115 @@
     font-family: 'Space Grotesk', sans-serif;
     border: 3px solid #1ABC67;
     box-shadow: 0 4px 0 #0b2f1f;
+  }
+
+  .add-job-btn {
+    background: #0E540C;
+    color: #19E697;
+    text-align: center;
+    padding: 0 24px;
+    border-radius: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Space Grotesk', sans-serif;
+    border: 3px solid #1ABC67;
+    box-shadow: 0 4px 0 #0b2f1f;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+  }
+
+  .add-job-btn:hover {
+    background: #1ABC67;
+    color: #0E540C;
+    border-color: #0E540C;
+  }
+
+  .add-job-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #0b2f1f;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(212, 238, 215, 0.4);
+    backdrop-filter: blur(16px) contrast(1.2); 
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: #0E540C;
+    padding: 32px;
+    border-radius: 24px;
+    border: 3px solid #1ABC67;
+    width: 85%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .modal-content h2 {
+    color: #19E697;
+    margin: 0;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .modal-content textarea {
+    width: 100%;
+    min-height: 250px;
+    background: #eef9ef;
+    color: #0b2f1f;
+    padding: 20px;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    border: 2px solid #158425;
+    resize: vertical;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
+  .modal-actions button {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .close-btn {
+    background: transparent;
+    color: #19E697;
+    border: 2px solid #19E697;
+  }
+
+  .close-btn:hover {
+    background: rgba(25, 230, 151, 0.2);
+  }
+
+  .parse-btn {
+    background: #1ABC67;
+    color: #0E540C;
+    border: 2px solid #1ABC67;
+  }
+
+  .parse-btn:hover {
+    filter: brightness(1.2);
   }
 
   /* SUB HEADER */
@@ -140,29 +299,53 @@
     align-items: center;
   }
 
-  .description {
+  .description-wrapper {
     flex: 1;
+    position: relative;
+    /* não precisa de flex aqui para que as divs absolutas fiquem bem atreladas a esse bloco principal */
+  }
+
+  .description {
+    width: 100%;
     background: #eef9ef;
     padding: 14px 24px;
     border-radius: 20px;
     border: 2px solid #158425;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     font-size: 1.2rem;
     cursor: pointer;
     transition: background 0.2s;
+  }
+
+  .description.expanded {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    max-height: 60vh;
+    overflow-y: auto;
   }
 
   .description:hover {
     background: #c8e6d9;
   }
 
+  .full-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    flex: 1;
+    margin-right: 12px;
+  }
+
   .plus {
     font-weight: bold;
     font-size: 1.8rem;
     color: #0E540C;
-    margin-left: 12px;
+    margin-left: auto;
   }
 
   /* SKILLS */
@@ -323,8 +506,7 @@
     .skills-box {
       grid-template-columns: repeat(2, 1fr);
     }
-    .title,
-    .company {
+    .title {
       font-size: 1.4rem;
       padding: 14px;
     }

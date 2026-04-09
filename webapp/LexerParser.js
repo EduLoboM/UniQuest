@@ -1,9 +1,7 @@
-import fs from "fs";
-import path from "path";
-
+// Modificado para compatibilidade WEB
 class SupremeSkillEngine {
-  constructor(registryFile = "skill_registry.json") {
-    this.registryFile = path.resolve(registryFile);
+  constructor(initialRegistry) {
+    // initialRegistry deve ser o JSON passado da UI
 
     // Intensificadores ordenados por prioridade (do mais forte ao mais fraco)
     // Using an array of [key, value] to preserve insertion order and priority
@@ -66,36 +64,18 @@ class SupremeSkillEngine {
     );
 
     this.defaultCategories = ["Psicologia", "Artes", "TI", "Outros"];
-    this.skillRegistry = this._loadRegistry();
+    this.skillRegistry = initialRegistry || this._loadRegistry();
   }
 
   // ── persistence ──────────────────────────────────────────────────────
 
   _loadRegistry() {
-    try {
-      if (fs.existsSync(this.registryFile)) {
-        const raw = fs.readFileSync(this.registryFile, "utf-8");
-        const data = JSON.parse(raw);
-
-        // Garante que todas as categorias padrão existam
-        for (const cat of this.defaultCategories) {
-          if (!(cat in data)) data[cat] = [];
-        }
-        return data;
-      }
-    } catch (e) {
-      console.error(`Erro ao carregar registro: ${e}`);
-    }
-
     return Object.fromEntries(this.defaultCategories.map((c) => [c, []]));
   }
 
   _saveRegistry() {
-    fs.writeFileSync(
-      this.registryFile,
-      JSON.stringify(this.skillRegistry, null, 4),
-      "utf-8"
-    );
+    // Ambiente WEB: não salva no disco local. A persistência é gerenciada pela UI se necessário.
+    console.log("LexerParser: Atualizações encontradas mas modo web não acessa disco local.");
   }
 
   // ── helpers ──────────────────────────────────────────────────────────
@@ -235,47 +215,3 @@ class SupremeSkillEngine {
 }
 
 export default SupremeSkillEngine;
-
-// ── CLI runner ──────────────────────────────────────────────────────────
-
-function main() {
-  const dir = path.dirname(new URL(import.meta.url).pathname);
-
-  const vagas = [
-    { file: "vaga_ti.txt", categoria: "TI" },
-    { file: "vaga_artes.txt", categoria: "Artes" },
-    { file: "vaga_psicologia.txt", categoria: "Psicologia" },
-  ];
-
-  const engine = new SupremeSkillEngine();
-
-  // Clear registry for demo purposes so it's clean
-  engine.skillRegistry = { TI: [], Artes: [], Psicologia: [], Outros: [] };
-
-  for (const { file, categoria } of vagas) {
-    const filePath = path.resolve(dir, file);
-    if (!fs.existsSync(filePath)) {
-      console.error(`❌ Arquivo não encontrado: ${filePath}`);
-      continue;
-    }
-    
-    const texto = fs.readFileSync(filePath, "utf-8");
-    const result = engine.parseVaga(texto, categoria);
-    
-    console.log(`\n── Resultado da Vaga (${file}) ──────────────────────────────────`);
-    console.log(JSON.stringify(result, null, 2));
-
-    console.log(`\n── Chaves geradas (lowercase map) ──────────────────────────────`);
-    console.log(JSON.stringify(Object.keys(result), null, 2));
-  }
-}
-
-// Run only when executed directly (not when imported as a module)
-const isMain =
-  process.argv[1] &&
-  fs.realpathSync(process.argv[1]) ===
-    fs.realpathSync(new URL(import.meta.url).pathname);
-
-if (isMain) {
-  main();
-}

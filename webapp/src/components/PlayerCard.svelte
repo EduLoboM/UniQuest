@@ -1,13 +1,24 @@
 <script>
   import { onMount } from "svelte";
-  import { navigate } from "../stores.js"; // <-- ADICIONE ESTA LINHA
+  import { navigate, playerSkills, playerProfile } from "../stores.js"; // <-- ADICIONE ESTA LINHA
   import skillData from "../../skill_registry.json";
 
-  let playerName = "Nome do Jogador";
-  let playerClass = "";
-  let description = "";
-  let xp = 35;
-  let xpPercent = 70;
+  let fileInput;
+
+  function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        $playerProfile.avatar = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function triggerUpload() {
+    fileInput.click();
+  }
 
   const tiRoles = [
     "Desenvolvedor Front-end",
@@ -33,23 +44,26 @@
   };
 
   // Ícone padrão caso não haja mapeamento
-  $: classIcon = playerClass
-    ? classIconMap[playerClass] || "espadaclasse.png"
+  $: classIcon = $playerProfile.jobClass
+    ? classIconMap[$playerProfile.jobClass] || "espadaclasse.png"
     : "espadaclasse.png";
 
-  // Lista de habilidades
-  const allSkills = Array.from(new Set(Object.values(skillData).flat()));
-  const skillIcons = ["bug.png", "pc.png", "distintivo.png", "document.png"];
-  
-  let skillsList = allSkills.map((name, i) => ({
-    name,
-    selected: false,
-    icon: skillIcons[i % skillIcons.length]
-  }));
+  // Lista de habilidades global
+  $: if ($playerSkills.length === 0) {
+    const allSkills = Array.from(new Set(Object.values(skillData).flat()));
+    const skillIcons = ["bug.png", "pc.png", "distintivo.png", "document.png"];
+    $playerSkills = allSkills.map((name, i) => ({
+      name,
+      selected: false,
+      icon: skillIcons[i % skillIcons.length]
+    }));
+  }
+
+  $: xp = $playerSkills.filter(s => s.selected).length;
+  $: xpPercent = $playerSkills.length > 0 ? (xp / $playerSkills.length) * 100 : 0;
 
   function toggleSkill(index) {
-    skillsList[index].selected = !skillsList[index].selected;
-    skillsList = skillsList;
+    $playerSkills[index].selected = !$playerSkills[index].selected;
   }
 
   onMount(() => {
@@ -63,8 +77,12 @@
 
 <div class="container">
   <div class="left">
-    <!-- Foto de perfil alterada para perfil.png -->
-    <img src="/perfil.png" alt="Personagem" class="character-img" />
+    <!-- Foto de perfil com upload -->
+    <div class="image-container" on:click={triggerUpload}>
+      <img src={$playerProfile.avatar} alt="Personagem" class="character-img" />
+      <div class="upload-overlay">Trocar Foto</div>
+    </div>
+    <input type="file" bind:this={fileInput} accept="image/*" style="display: none;" on:change={handleImageUpload} />
     <!-- Ícone da classe que muda dinamicamente -->
     <div class="overlay-icon">
       <img src="/{classIcon}" alt="Classe" />
@@ -76,7 +94,7 @@
       <input
         type="text"
         class="player-name-input"
-        bind:value={playerName}
+        bind:value={$playerProfile.name}
         placeholder="Seu nome"
       />
 
@@ -90,8 +108,8 @@
     </div>
 
     <select
-      bind:value={playerClass}
-      class={playerClass === "" ? "placeholder-active" : ""}
+      bind:value={$playerProfile.jobClass}
+      class={$playerProfile.jobClass === "" ? "placeholder-active" : ""}
     >
       <option value="" disabled selected>[Cargo de TI]</option>
       {#each tiRoles as role}
@@ -99,12 +117,12 @@
       {/each}
     </select>
 
-    <textarea placeholder="[Descrição do Jogador]" bind:value={description}
+    <textarea placeholder="[Descrição do Jogador]" bind:value={$playerProfile.description}
     ></textarea>
 
     <!-- Habilidades com scroll -->
     <div class="skills-scrollable">
-      {#each skillsList as skill, i}
+      {#each $playerSkills as skill, i}
         <div
           class="skill-item"
           class:selected={skill.selected}
@@ -163,13 +181,45 @@
     display: flex;
   }
 
+  .image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 3px solid #158425;
+  }
+
   .character-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 20px;
     display: block;
-    border: 3px solid #158425;
+    transition: filter 0.3s;
+  }
+
+  .upload-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(14, 84, 12, 0.7);
+    color: #1abc67;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: "Space Grotesk", sans-serif;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .image-container:hover .character-img {
+    filter: brightness(0.6) blur(2px);
+  }
+
+  .image-container:hover .upload-overlay {
+    opacity: 1;
   }
 
   .overlay-icon {
@@ -210,14 +260,14 @@
   }
 
   .player-name-input {
-    background: #eef9ef;
-    color: #0b6623;
+    background: #0e540c;
+    color: #ffffff;
     padding: 16px 28px;
     border-radius: 12px;
     font-weight: 700;
     font-size: 1.8rem;
     font-family: "Space Grotesk", sans-serif;
-    border: 3px solid #158425;
+    border: 3px solid #1abc67;
     outline: none;
     width: auto;
     min-width: 250px;
@@ -354,8 +404,8 @@
   }
 
   .skill-item.selected {
-    background: #1abc67;
-    border-color: #0e540c;
+    background: #0e540c;
+    border-color: #1abc67;
     color: #ffffff;
     font-weight: bold;
     box-shadow: 0 0 8px #158425;
