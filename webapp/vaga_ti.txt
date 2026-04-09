@@ -1,0 +1,15 @@
+Vaga: Desenvolvedor Gameplay / Engine
+
+Estamos recrutando talentos para o nosso time de arquitetura base!
+
+O que buscamos imperativamente:
+- Experiência avançada em C++ e C#
+- Obrigatório Matemática 3D e OOP
+- Sólida bagagem em Unity e Unreal Engine
+- Conhecimento de Git avançado
+- Diferencial positivo: Shaders, HLSL e Multiplayer
+
+O que você vai fazer:
+- Desenvolver os core systems e mecânicas base.
+- Analisar framerates e criar código performático.
+- Guiar a implementação técnica das batalhas.

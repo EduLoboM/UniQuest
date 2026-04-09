@@ -1,0 +1,110 @@
+{
+  "c++": [
+    {
+      "title": "C++ Tutorial for Beginners",
+      "url": "https://www.youtube.com/watch?v=vLnPwxZdW4Y"
+    }
+  ],
+  "c#": [
+    {
+      "title": "C# Completo e Orientação a Objetos",
+      "url": "https://www.youtube.com/watch?v=GHqespt__ck"
+    }
+  ],
+  "matemática 3d": [
+    {
+      "title": "3D Math for Game Development",
+      "url": "https://www.youtube.com/watch?v=A_W0zO0XNno"
+    }
+  ],
+  "oop": [
+    {
+      "title": "Programação Orientada a Objetos",
+      "url": "https://www.youtube.com/watch?v=QY0Kdg8AIQ"
+    }
+  ],
+  "unity": [
+    {
+      "title": "Unity Beginner Tutorial",
+      "url": "https://www.youtube.com/watch?v=gB1F9G0J8Ek"
+    }
+  ],
+  "unreal engine": [
+    {
+      "title": "Unreal Engine 5 Beginner Tutorial",
+      "url": "https://www.youtube.com/watch?v=k-zMkJMCEAQ"
+    }
+  ],
+  "git": [
+    {
+      "title": "Git e Github para Iniciantes",
+      "url": "https://www.youtube.com/watch?v=2kLTiIjc"
+    }
+  ],
+  "adobe photoshop": [
+    {
+      "title": "Curso Completo de Photoshop Grátis",
+      "url": "https://www.youtube.com/watch?v=1b92tZl2B"
+    }
+  ],
+  "teoria das cores": [
+    {
+      "title": "Teoria das Cores para Artistas Digitais",
+      "url": "https://www.youtube.com/watch?v=48-H4Xo8h"
+    }
+  ],
+  "animação 2d": [
+    {
+      "title": "Fundamentos da Animação 2D",
+      "url": "https://www.youtube.com/watch?v=haXfN2n8I"
+    }
+  ],
+  "tcc": [
+    {
+      "title": "Introdução à Terapia Cognitivo-Comportamental",
+      "url": "https://www.youtube.com/watch?v=R9_mD1F91"
+    }
+  ],
+  "testes psicológicos": [
+    {
+      "title": "Avaliação Psicológica e Bateria de Testes",
+      "url": "https://www.youtube.com/watch?v=G3z5mKXm3"
+    }
+  ],
+  "terapia sistêmica": [
+    {
+      "title": "Bases Práticas da Terapia Sistêmica",
+      "url": "https://www.youtube.com/watch?v=Vl8d7K0oZ"
+    }
+  ],
+  "psiquiatria": [
+    {
+      "title": "Psiquiatria Básica - Aulas Intensivas",
+      "url": "https://www.youtube.com/watch?v=1L8a2V0dM"
+    }
+  ],
+  "psicopatologia": [
+    {
+      "title": "Entendendo a Psicopatologia",
+      "url": "https://www.youtube.com/watch?v=yYf9sT7hH"
+    }
+  ],
+  "psicodiagnóstico": [
+    {
+      "title": "Introdução Prática ao Psicodiagnóstico",
+      "url": "https://www.youtube.com/watch?v=eRhyQDBiRTo"
+    }
+  ],
+  "pintura digital": [
+    {
+      "title": "Pintura Digital Descomplicada",
+      "url": "https://www.youtube.com/watch?v=xZN_YpG2l60"
+    }
+  ],
+  "realismo": [
+    {
+      "title": "Técnicas de Textura de Estilo Realista",
+      "url": "https://www.youtube.com/watch?v=yPqw6"
+    }
+  ]
+}

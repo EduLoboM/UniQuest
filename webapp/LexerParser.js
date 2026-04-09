@@ -8,43 +8,55 @@ class SupremeSkillEngine {
     // Intensificadores ordenados por prioridade (do mais forte ao mais fraco)
     // Using an array of [key, value] to preserve insertion order and priority
     this.intensifiers = [
-      ["obrigatório", 100],
-      ["imprescindível", 100],
-      ["expert", 100],
-      ["especialista", 100],
-      ["avançado", 90],
-      ["domínio", 90],
-      ["experiência sólida", 85],
-      ["sólida", 85],
-      ["sólidas", 85],
-      ["sólido", 85],
-      ["sólidos", 85],
-      ["experiência", 65],
-      ["conhecimento", 40],
-      ["familiaridade", 50],
-      ["noções", 30],
-      ["básico", 30],
-      ["desejável", 50],
-      ["preferencial", 50],
+      ["obrigatório", 100], ["mandatório", 100], ["imprescindível", 100],
+      ["essencial", 100], ["indispensável", 100], ["requisito", 100],
+      ["expert", 100], ["especialista", 100], ["senior", 100], ["sênior", 100],
+      ["avançado", 90], ["avançada", 90], ["avançadas", 90], ["avançados", 90], 
+      ["domínio", 90], ["fluente", 90], ["impecável", 90],
+      ["experiência sólida", 85], ["sólida", 85], ["sólidas", 85], ["sólido", 85], ["sólidos", 85],
+      ["experiência", 65], ["vivência", 65], ["pleno", 65],
+      ["conhecimento", 50], ["intermediário", 50],
+      ["familiaridade", 40],
+      ["noções", 30], ["básico", 30], ["junior", 30], ["júnior", 30],
+      ["diferencial positivo", 60], ["positivo", 60], ["desejável", 60], ["diferencial", 60], ["plus", 60], ["preferencial", 60],
     ];
 
-    // Acrônimos comuns que devem ficar em MAIÚSCULAS
     this.commonAcronyms = new Set([
       "SQL", "AWS", "AZURE", "GCP", "AI", "ML", "NLP", "ERP", "CRM",
       "API", "UI", "UX", "HTML", "CSS", "JS", "TS", "REACT", "NODE",
-      "DOCKER", "K8S", "CI", "CD", "ETL", "BI", "POWERBI", "LLM", "LLMS", "C#", "C++",
+      "DOCKER", "K8S", "CI", "CD", "ETL", "BI", "POWERBI", "LLM", "LLMS",
+      "C#", "C++", "PHP", "VUE", "SEO", "QA", "PO", "PM", "SM"
     ]);
 
-    // Precompila o padrão de remoção (muito mais eficiente)
-    // Note: JS \b doesn't work with accented chars — use Unicode lookarounds
+    this.actionVerbs = new Set([
+      "trabalhar", "desenvolver", "atuar", "implementar", "manter", "corrigir",
+      "apoiar", "participar", "colaborar", "gostar", "curtir", "residir", "enviar",
+      "possuir", "ter", "criar", "garantir", "auxiliar", "gerar", "planejar", 
+      "executar", "entregar", "realizar", "projetar", "testar", "otimizar",
+      "analisar", "resolver", "escrever", "comunicar", "liderar", "gerenciar",
+      "definir", "validar", "monitorar", "acompanhar", "estruturar", "organizar"
+    ]);
+
+    this.ignoreKeywords = new Set([
+      "benefício", "benefícios", "remoto", "híbrido", "contratação", "salário", 
+      "requisito", "requisitos", "diferencial", "diferenciais", "local", "modelo", 
+      "horário", "vaga", "candidatar", "ajuda custo", "vt", "vr", "vale", 
+      "transporte", "refeição", "plano de saúde", "seguro de vida", "idade",
+      "gênero", "etnia", "currículo", "cv", "portfolio", "portfólio",
+      "estamos contratando", "oportunidade", "empresa", "equipe", "ambiente"
+    ]);
+
     const allIntensifiers = this.intensifiers
       .map(([k]) => k)
       .sort((a, b) => b.length - a.length);
 
-    const removeTerms = [
-      ...allIntensifiers,
-      "em", "com", "de", "na", "no", "para", "a", "o", "as", "os", "um", "uma"
+    const prepositions = [
+      "em", "com", "de", "do", "da", "dos", "das", "na", "no", "nas", "nos", 
+      "para", "pra", "pro", "por", "pelo", "pela", "pelos", "pelas",
+      "a", "o", "as", "os", "um", "uma", "uns", "umas", "sobre", "sem"
     ];
+
+    const removeTerms = [...allIntensifiers, ...prepositions];
 
     const escaped = removeTerms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     // Unicode-aware word boundary: (?<!\p{L}) ... (?!\p{L})
@@ -174,14 +186,32 @@ class SupremeSkillEngine {
       );
 
       for (const part of parts) {
-        if (!part || part.length < 2) continue;
+        let cleanPart = part.replace(/^[.:;,\-\s]+|[.:;,\-\s]+$/g, "").trim();
 
-        const skillName = this._normalizeSkillName(part);
+        const words = cleanPart.split(/\s+/);
+        while (words.length > 0 && this.actionVerbs.has(words[0].toLowerCase())) {
+          words.shift();
+        }
+        cleanPart = words.join(" ");
+
+        if (!cleanPart || cleanPart.length < 2) continue;
+
+        if (words.length > 4) continue;
+
+        const lowerPart = cleanPart.toLowerCase();
+        let isGarbage = false;
+        for (const ignore of this.ignoreKeywords) {
+          if (lowerPart.includes(ignore)) {
+            isGarbage = true;
+            break;
+          }
+        }
+        if (/^[\d.:;,\-]+$/.test(lowerPart)) isGarbage = true;
+        
+        if (isGarbage) continue;
+
+        const skillName = this._normalizeSkillName(cleanPart);
         const skillKey = skillName.toLowerCase();
-
-        // Evita sentenças longas e não tira preposição do meio se quebrou errado
-        const wordCount = skillName.trim().split(/\s+/).length;
-        if (wordCount > 4) continue;
 
         // Adiciona ao registry global se for nova
         if (!existingSkillsLower.has(skillKey)) {
@@ -209,25 +239,35 @@ export default SupremeSkillEngine;
 // ── CLI runner ──────────────────────────────────────────────────────────
 
 function main() {
-  const examplePath = path.resolve(
-    path.dirname(new URL(import.meta.url).pathname),
-    "example.txt"
-  );
+  const dir = path.dirname(new URL(import.meta.url).pathname);
 
-  if (!fs.existsSync(examplePath)) {
-    console.error(`❌ Arquivo não encontrado: ${examplePath}`);
-    process.exit(1);
-  }
+  const vagas = [
+    { file: "vaga_ti.txt", categoria: "TI" },
+    { file: "vaga_artes.txt", categoria: "Artes" },
+    { file: "vaga_psicologia.txt", categoria: "Psicologia" },
+  ];
 
-  const texto = fs.readFileSync(examplePath, "utf-8");
   const engine = new SupremeSkillEngine();
-  const result = engine.parseVaga(texto, "TI");
 
-  console.log("\n── Resultado da Vaga ──────────────────────────────────");
-  console.log(JSON.stringify(result, null, 2));
+  // Clear registry for demo purposes so it's clean
+  engine.skillRegistry = { TI: [], Artes: [], Psicologia: [], Outros: [] };
 
-  console.log("\n── Registro Global (TI) ──────────────────────────────");
-  console.log(JSON.stringify(engine.skillRegistry["TI"], null, 2));
+  for (const { file, categoria } of vagas) {
+    const filePath = path.resolve(dir, file);
+    if (!fs.existsSync(filePath)) {
+      console.error(`❌ Arquivo não encontrado: ${filePath}`);
+      continue;
+    }
+    
+    const texto = fs.readFileSync(filePath, "utf-8");
+    const result = engine.parseVaga(texto, categoria);
+    
+    console.log(`\n── Resultado da Vaga (${file}) ──────────────────────────────────`);
+    console.log(JSON.stringify(result, null, 2));
+
+    console.log(`\n── Chaves geradas (lowercase map) ──────────────────────────────`);
+    console.log(JSON.stringify(Object.keys(result), null, 2));
+  }
 }
 
 // Run only when executed directly (not when imported as a module)
