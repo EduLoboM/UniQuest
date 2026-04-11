@@ -113,5 +113,5 @@ O projeto está configurado para deploy instantâneo na **Vercel**. O ficheiro `
 -----
 
 <p align="center">
-Desenvolvido com ⚔️ por <a href="https://www.google.com/search?q=https://github.com/Semil-2006">Alan Semil</a>, <a href="https://www.google.com/search?q=https://github.com/thetrulyvoid">Arthur Martins</a>, <a href="https://www.google.com/search?q=https://github.com/EduLoboM">Eduardo Lobo</a> e <a href="https://www.google.com/search?q=https://github.com/fabysoouza">Fabiana Reis</a>.
+Desenvolvido com ⚔️ por <a href="https://github.com/Semil-2006">Alan Semil</a>, <a href="https://github.com/thetrulyvoid">Arthur Martins</a>, <a href="https://github.com/EduLoboM">Eduardo Lobo</a> e <a href="https://github.com/fabysoouza">Fabiana Reis</a>.
 </p>
