@@ -1,130 +1,117 @@
-# 🎓✨ UniQuest
+# 🧙‍♂️⚔️ UniQuest
 
 ![Theme](https://img.shields.io/badge/Categoria-Education_Tech-lightgrey?style=for-the-badge&labelColor=black)
 ![Framework](https://img.shields.io/badge/Framework-Svelte-lightgrey?style=for-the-badge&logo=svelte&logoColor=white&labelColor=black)
-![Language](https://img.shields.io/badge/Made_with-TypeScript-lightgrey?style=for-the-badge&logo=typescript&logoColor=white&labelColor=black)
+![Language](https://img.shields.io/badge/Made_with-TypeScript_/_JS-lightgrey?style=for-the-badge&logo=javascript&logoColor=white&labelColor=black)
 ![Build](https://img.shields.io/badge/Build-Vite-lightgrey?style=for-the-badge&logo=vite&logoColor=white&labelColor=black)
+![Deploy](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)
+![Hackathon](https://img.shields.io/badge/🏆_Edumi_Hackathon-2nd_Place-gold?style=for-the-badge&labelColor=black)
 
-> **Um motor avançado de extração e análise de habilidades para vagas de emprego.**
+> **Uma plataforma gamificada que transforma a procura de emprego e o desenvolvimento de competências numa aventura RPG épica.**
 
-**UniQuest** é uma aplicação web desenvolvida em **Svelte** e em **TypeScript**, projetada para extrair, categorizar e pontuar requisitos técnicos e comportamentais a partir de descrições de vagas usando processamento de linguagem natural focado.
+> 🏆 **2º Lugar — Edumi Hackathon** 🏆
+>
+> O UniQuest conquistou o **segundo lugar** no **Edumi Hackathon**, sendo reconhecido pela sua abordagem inovadora em gamificação educacional e análise inteligente de competências profissionais.
 
-A plataforma oferece um mecanismo poderoso (Target Skill Engine) para limpar ruídos das postagens de emprego, entender a prioridade dos requisitos (Obrigatório, Desejável, etc.) e formar um registro de habilidades consolidado, independente do jargão ou formato informal dos recrutadores.
+O **UniQuest** é uma aplicação web desenvolvida em **Svelte** e **Vite**, projetada para extrair, categorizar e pontuar requisitos técnicos e comportamentais a partir de descrições de vagas. O projeto evoluiu para uma interface visual imersiva onde os utilizadores criam uma "Ficha de Personagem", enfrentam "Bosses" (Vagas de Emprego) e completam "Missões" (Cursos) para evoluir na sua carreira.
 
-## 🌌 Funcionalidades Principais
+## 🗡️ Funcionalidades Principais
 
-| Feature | Tecnologia / Implementação | Descrição |
-| :--- | :--- | :--- |
-| **Supreme Skill Engine** | `src/lib/SupremeSkillEngine.ts` | Motor de parsing avançado para examinar vagas, pontuando os requisitos com base no contexto semântico. |
-| **Intensity Detection** | `SupremeSkillEngine.ts` | Avaliação da força da skill (Mandatório, Diferencial, Básico) mapeada a uma pontuação fixa. |
-| **Noise Reduction** | `LexerParser.js` | Filtros robustos para remover preposições, jargões contratuais (benefícios, modelo de contratação) e verbos de ação que não representam habilidades. |
-| **Acronym Normalization** | `SupremeSkillEngine.ts` | Reconhecimento e padronização automática de dezenas de acrônimos comuns do mercado e tecnologias de TI. |
-| **Skill Registry** | `skill_registry.json` | Dicionário adaptável persistido que mapeia novas habilidades identificadas e as classifica por área (TI, Artes, Psicologia). |
+O sistema está agora dividido em três ecrãs principais de interação (SPA) e um motor de processamento em segundo plano:
 
-## 🎴 Arquitetura do Sistema
+| Funcionalidade | Descrição |
+| :--- | :--- |
+| 🛡️ **Perfil RPG (Player Card)** | Crie o seu avatar, escolha a sua "Classe" (ex: Desenvolvedor Front-end, Concept Artist, Psicólogo Clínico) e selecione as suas competências. A barra de XP visual aumenta conforme adiciona skills. Inclui a capacidade de **exportar a ficha de jogador como imagem (PNG)** para partilhar no GitHub ou LinkedIn. |
+| ⚔️ **Arena de Batalha (Job Match)** | Cole a descrição de uma vaga de emprego e o motor *LexerParser* entra em ação. O ecrã simula um embate visual entre o Herói e o "Boss" (a vaga). Se a correspondência de competências for igual ou superior a 75%, o jogador vence a batalha (com direito a animação de confettis 🎉). |
+| 📜 **Missões de Aprimoramento (Quest Log)** | As competências que faltaram para conquistar a vaga transformam-se automaticamente em Missões. O sistema gera atalhos de estudo dinâmicos, recomendando cursos específicos ou criando **links de pesquisa automáticos para a Udemy e YouTube** para cada competência em falta. |
+| 🧠 **Supreme Skill Engine** | O motor de processamento de linguagem natural (NLP) contínua a alimentar a app. Limpa ruídos das vagas, reconhece jargões de recrutamento e auto-regista novas competências desconhecidas, classificando-as em categorias e gerando recursos de aprendizagem em tempo real. |
+| 💾 **Persistência de Dados** | Todo o progresso do jogador (Avatar, Skills, Vagas Analisadas e Missões) é guardado automaticamente no `localStorage` do navegador. |
+
+## 🛠️ Stack Tecnológico Atualizado
+
+* **Frontend:** Svelte (v5)
+* **Routing:** `svelte-routing` (Navegação SPA sem recarregar a página)
+* **Build & Bundler:** Vite
+* **Bibliotecas Visuais:** * `html2canvas` (Para exportação da Ficha de Jogador)
+  * `canvas-confetti` (Para feedback visual de vitória)
+* **Deployment:** Preparado para a **Vercel** com reescrita de rotas configurada (`vercel.json`).
+
+## 🧝 Arquitetura do Sistema
 
 ```mermaid
-graph LR
-    User["Usuário"]:::user --> Browser[Svelte App]:::client
-    Browser --> Engine["Supreme Skill Engine"]:::logic
+graph TD
+    User["Utilizador"] --> SPA[Svelte SPA]
     
-    subgraph Internal Engine
-        Engine --> Lexer["Lexer & Text Pre-Processor"]:::process
-        Lexer --> Intensity["Intensity Matcher"]:::data
-        Lexer --> Normalizer["Skill Normalizer"]:::data
+    subgraph Frontend App
+        Router["Svelte Routing"] --> Profile["/ (PlayerCard)"]
+        Router --> Battle["/fight (FightScreen)"]
+        Router --> Quests["/quest (QuestScreen)"]
     end
+    
+    SPA --> Router
+    
+    subgraph Logic & Storage
+        Battle --> Engine["Supreme Skill Engine (LexerParser)"]
+        Engine --> |Extrai Competências| Quests
+        Profile -.-> |Guarda Estado| Storage[(localStorage)]
+        Battle -.-> |Guarda Progresso| Storage
+        Quests -.-> |Lê Missões| Storage
+    end
+    
+    Quests --> ExtLinks["Links Udemy/YouTube"]
+````
 
-    Intensity --> Scorer["Score Aggregator"]:::process
-    Normalizer --> Scorer
+## 🧚 Como Executar Localmente
 
-    Scorer --> Output["Mapped Skills & Scores"]:::view
-    Scorer -.-> Storage["localStorage Registry"]:::data
-```
+### Requisitos
 
-## 🌺 Como Executar
+  * **Node.js** v18+
+  * **npm** (ou Yarn/PNPM)
 
-### Desenvolvimento Local
-
-#### Requisitos
-
-* **Node.js** v18+
-* **npm** (ou Yarn/PNPM)
-
-#### Instalação
+### Instalação
 
 ```bash
 # Clone e entre na pasta da aplicação web
-git clone https://github.com/EduLoboM/UniQuest.git
+git clone [https://github.com/EduLoboM/UniQuest.git](https://github.com/EduLoboM/UniQuest.git)
 cd UniQuest/webapp
 
-# Instalar dependências do ecossistema Svelte/Vite
+# Instalar as dependências do projeto
 npm install
 
-# Executar servidor de desenvolvimento com hot-reload (HMR)
+# Executar o servidor de desenvolvimento com hot-reload (HMR)
 npm run dev
 
-# Acesse a aplicação na porta indicada pelo Vite (geralmente localhost:5173)
+# Aceda à aplicação através do link indicado na consola (geralmente http://localhost:5173)
 ```
 
-## 💮 Estrutura do Projeto
+## 🏰 Estrutura do Projeto
+
+A estrutura foi reorganizada para suportar componentes de interface:
 
 ```
 UniQuest/
-├── package.json                  # Informações raíz
-├── README.md                     # Documentação (você está aqui)
 └── webapp/
-    ├── src/
-    │   └── lib/
-    │       └── SupremeSkillEngine.ts # Implementação TypeScript central da engine
+    ├── package.json              # Dependências e scripts do frontend
+    ├── vercel.json               # Configuração de rotas para deploy na Vercel
     ├── vite.config.js            # Configuração do Vite
-    ├── svelte.config.js          # Configuração do framework Svelte
-    ├── package.json              # Dependências de frontend
-    ├── LexerParser.js            # Motor CLI e implementação em JS
-    ├── vaga_ti.txt               # Input base de exemplo para T.I.
-    ├── vaga_artes.txt            # Input base de exemplo para Artes
-    ├── vaga_psicologia.txt       # Input base de exemplo para Psicologia
+    ├── LexerParser.js            # Motor de Parsing & NLP
     ├── skill_registry.json       # Base de dados estruturada das habilidades
-    └── skill_courses.json        # Mapeamento do currículo de cursos
+    ├── skill_courses.json        # Mapeamento do currículo de cursos pré-definidos
+    └── src/
+        ├── App.svelte            # Ponto de entrada e configuração do Router
+        ├── stores.js             # Gestão de estado global e localStorage
+        └── components/
+            ├── PlayerCard.svelte # Componente do Perfil do Jogador
+            ├── FightScreen.svelte# Componente de Análise de Vagas/Batalha
+            └── QuestScreen.svelte# Componente de Missões e Cursos
 ```
 
-## 🏵️ Testes
+## 🚀 Deployment (CI/CD)
 
-A base principal da lógica (o processador de linguagem natural) conta com scripts dedicados e ferramentas de processamento pontual via Node.js para validação do comportamento antes do envio para o frontend.
+O projeto está configurado para deploy instantâneo na **Vercel**. O ficheiro `vercel.json` incluído na raiz da pasta `webapp` garante que a navegação SPA funcione corretamente em produção, redirecionando todos os pedidos de rotas (como `/fight` ou `/quest`) para o ficheiro `index.html`.
 
-### Testar Engine via CLI Local
-
-```bash
-# Entrar no diretório web
-cd webapp
-
-# Avaliar o motor interpretando diferentes arquivos TXT (Vagas mock)
-node LexerParser.js
-```
-*O script em JS varre as vagas de Artes, TI e Psicologia detalhando a captura das skills via console log.*
-
-## 🎋 CI/CD
-
-Com um frontend agnóstico, pipelines podem ser escalados no GitHub Actions como o seguinte fluxo genérico:
-
-1. **Checkout** - Captura do código fonte e assets
-2. **Setup Node** - Instalação da cadeia NPM compatível
-3. **Dependencies** - Obtenção transparente dos módulos do Svelte
-4. **Build** - `npm run build` na geração de estáticos do Vite
-
-## 💠 Destaques Técnicos
-
-### Tratamento Flexível de Requisitos
-
-A varredura ignora com sucesso sentenças descritivas densas para destacar o conteúdo vital:
-- **Separações Complexas**: Quebra habilidades emendadas por conjunções de diferentes cenários (`"e/ou"`, `"e"`, `"/"`, `","`).
-- **Verbos de Ação Capped**: Remove termos de introdução típicos do HR (ex: `"Experiência em atuar com React"` torna-se `"React"`).
-
-### Persistence System
-
-A plataforma implementa um formato em que o estado reativo salva incrementalmente as novas tags detectadas. A base da categoria atualiza ativamente baseando-se no cruzamento diário de milhares de requerimentos de jobs diferentes, alimentando a infraestrutura que mapeia a educação desejada.
-
----
+-----
 
 <p align="center">
-Desenvolvido com ✨ por <b>Eduardo Lôbo Moreira</b>.
+Desenvolvido com ⚔️ por <b>Eduardo Lôbo Moreira</b>.
 </p>
